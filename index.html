@@ -95,17 +95,228 @@ var cntLbl    = "rgba(170,190,210,0.30)";
    COUNTRY NAMES
    =========================================================== */
 var names = {
-  "004":"Afghanistan","036":"Australia","050":"Bangladesh","076":"Brazil",
-  "124":"Canada","156":"China","818":"Egypt","250":"France","276":"Germany",
-  "356":"India","360":"Indonesia","364":"Iran","368":"Iraq","392":"Japan",
-  "404":"Kenya","458":"Malaysia","508":"Mozambique","524":"Nepal",
-  "566":"Nigeria","586":"Pakistan","643":"Russia","682":"Saudi Arabia",
-  "710":"South Africa","144":"Sri Lanka","764":"Thailand","792":"Turkey",
-  "826":"United Kingdom","840":"United States","704":"Vietnam","887":"Yemen",
-  "834":"Tanzania","512":"Oman","784":"UAE","104":"Myanmar","450":"Madagascar",
-  "462":"Maldives","608":"Philippines","496":"Mongolia","398":"Kazakhstan",
-  "706":"Somalia","012":"Algeria","434":"Libya","024":"Angola"
+  "004":"Afghanistan","008":"Albania","012":"Algeria","024":"Angola","032":"Argentina",
+  "036":"Australia","040":"Austria","031":"Azerbaijan","048":"Bahrain","050":"Bangladesh",
+  "056":"Belgium","064":"Bhutan","068":"Bolivia","070":"Bosnia & Herzegovina","072":"Botswana",
+  "076":"Brazil","100":"Bulgaria","104":"Myanmar","108":"Burundi","116":"Cambodia",
+  "120":"Cameroon","124":"Canada","140":"Central African Rep.","144":"Sri Lanka","148":"Chad",
+  "152":"Chile","156":"China","170":"Colombia","178":"Congo","180":"DR Congo",
+  "188":"Costa Rica","191":"Croatia","192":"Cuba","196":"Cyprus","203":"Czechia",
+  "204":"Benin","208":"Denmark","214":"Dominican Rep.","218":"Ecuador","222":"El Salvador",
+  "226":"Equatorial Guinea","231":"Ethiopia","232":"Eritrea","233":"Estonia",
+  "242":"Fiji","246":"Finland","250":"France","266":"Gabon","268":"Georgia",
+  "270":"Gambia","276":"Germany","288":"Ghana","300":"Greece","320":"Guatemala",
+  "324":"Guinea","328":"Guyana","332":"Haiti","340":"Honduras","348":"Hungary",
+  "352":"Iceland","356":"India","360":"Indonesia","364":"Iran","368":"Iraq",
+  "372":"Ireland","376":"Israel","380":"Italy","384":"Ivory Coast","388":"Jamaica",
+  "392":"Japan","398":"Kazakhstan","400":"Jordan","404":"Kenya","408":"North Korea",
+  "410":"South Korea","414":"Kuwait","417":"Kyrgyzstan","418":"Laos","422":"Lebanon",
+  "426":"Lesotho","428":"Latvia","430":"Liberia","434":"Libya","440":"Lithuania",
+  "442":"Luxembourg","450":"Madagascar","454":"Malawi","458":"Malaysia","462":"Maldives",
+  "466":"Mali","470":"Malta","478":"Mauritania","480":"Mauritius","484":"Mexico",
+  "496":"Mongolia","499":"Montenegro","504":"Morocco","508":"Mozambique","512":"Oman",
+  "516":"Namibia","524":"Nepal","528":"Netherlands","540":"New Caledonia","554":"New Zealand",
+  "558":"Nicaragua","562":"Niger","566":"Nigeria","578":"Norway","586":"Pakistan",
+  "591":"Panama","598":"Papua New Guinea","600":"Paraguay","604":"Peru","608":"Philippines",
+  "616":"Poland","620":"Portugal","634":"Qatar","642":"Romania","643":"Russia",
+  "646":"Rwanda","682":"Saudi Arabia","686":"Senegal","688":"Serbia","694":"Sierra Leone",
+  "702":"Singapore","703":"Slovakia","704":"Vietnam","705":"Slovenia","706":"Somalia",
+  "710":"South Africa","716":"Zimbabwe","724":"Spain","728":"South Sudan","729":"Sudan",
+  "740":"Suriname","748":"Eswatini","752":"Sweden","756":"Switzerland",
+  "760":"Syria","762":"Tajikistan","764":"Thailand","768":"Togo",
+  "780":"Trinidad & Tobago","784":"UAE","788":"Tunisia","792":"Turkey",
+  "795":"Turkmenistan","800":"Uganda","804":"Ukraine","818":"Egypt",
+  "826":"United Kingdom","834":"Tanzania","840":"United States",
+  "854":"Burkina Faso","858":"Uruguay","860":"Uzbekistan","862":"Venezuela",
+  "887":"Yemen","894":"Zambia"
 };
+
+/* ===========================================================
+   CAPITALS - [name, longitude, latitude]
+   =========================================================== */
+var capitals = {
+  "004":["Kabul",69.17,34.53],"008":["Tirana",19.82,41.33],
+  "012":["Algiers",3.04,36.77],"024":["Luanda",13.23,-8.84],
+  "032":["Buenos Aires",-58.38,-34.60],"036":["Canberra",149.13,-35.28],
+  "040":["Vienna",16.37,48.21],"031":["Baku",49.87,40.41],
+  "048":["Manama",50.58,26.23],"050":["Dhaka",90.41,23.71],
+  "056":["Brussels",4.35,50.85],"064":["Thimphu",89.64,27.47],
+  "068":["La Paz",-68.15,-16.50],"070":["Sarajevo",18.41,43.86],
+  "072":["Gaborone",25.91,-24.65],"076":["Brasilia",-47.93,-15.78],
+  "100":["Sofia",23.32,42.70],"104":["Naypyidaw",96.13,19.76],
+  "108":["Gitega",29.93,-3.43],"116":["Phnom Penh",104.92,11.56],
+  "120":["Yaounde",11.52,3.87],"124":["Ottawa",-75.70,45.42],
+  "140":["Bangui",18.56,4.36],"144":["Colombo",79.86,6.93],
+  "148":["N'Djamena",15.04,12.11],"152":["Santiago",-70.67,-33.45],
+  "156":["Beijing",116.39,39.91],"170":["Bogota",-74.07,4.71],
+  "178":["Brazzaville",15.28,-4.27],"180":["Kinshasa",15.31,-4.32],
+  "188":["San Jose",-84.09,9.93],"191":["Zagreb",15.98,45.81],
+  "192":["Havana",-82.37,23.11],"196":["Nicosia",33.38,35.19],
+  "203":["Prague",14.42,50.08],"204":["Porto-Novo",2.62,6.50],
+  "208":["Copenhagen",12.57,55.68],"218":["Quito",-78.50,-0.23],
+  "231":["Addis Ababa",38.75,9.02],"232":["Asmara",38.93,15.34],
+  "233":["Tallinn",24.75,59.44],"246":["Helsinki",24.94,60.17],
+  "250":["Paris",2.35,48.86],"266":["Libreville",9.45,0.39],
+  "268":["Tbilisi",44.79,41.72],"276":["Berlin",13.41,52.52],
+  "288":["Accra",-0.19,5.56],"300":["Athens",23.73,37.98],
+  "324":["Conakry",-13.68,9.64],"332":["Port-au-Prince",-72.34,18.54],
+  "348":["Budapest",19.04,47.50],"352":["Reykjavik",-21.90,64.14],
+  "356":["New Delhi",77.21,28.61],"360":["Jakarta",106.85,-6.21],
+  "364":["Tehran",51.39,35.69],"368":["Baghdad",44.37,33.31],
+  "372":["Dublin",-6.26,53.35],"376":["Jerusalem",35.22,31.77],
+  "380":["Rome",12.50,41.90],"384":["Yamoussoukro",-5.28,6.82],
+  "392":["Tokyo",139.69,35.69],"398":["Astana",71.43,51.17],
+  "400":["Amman",35.93,31.95],"404":["Nairobi",36.82,-1.29],
+  "408":["Pyongyang",125.75,39.02],"410":["Seoul",126.98,37.57],
+  "414":["Kuwait City",47.98,29.37],"417":["Bishkek",74.59,42.87],
+  "418":["Vientiane",102.63,17.97],"422":["Beirut",35.50,33.89],
+  "428":["Riga",24.11,56.95],"434":["Tripoli",13.18,32.89],
+  "440":["Vilnius",25.28,54.69],"450":["Antananarivo",47.52,-18.91],
+  "454":["Lilongwe",33.79,-13.97],"458":["Kuala Lumpur",101.69,3.14],
+  "462":["Male",73.51,4.18],"466":["Bamako",-8.00,12.65],
+  "478":["Nouakchott",-15.98,18.09],"480":["Port Louis",57.50,-20.16],
+  "484":["Mexico City",-99.13,19.43],"496":["Ulaanbaatar",106.91,47.92],
+  "499":["Podgorica",19.26,42.44],"504":["Rabat",-6.85,34.02],
+  "508":["Maputo",32.59,-25.97],"512":["Muscat",58.54,23.61],
+  "516":["Windhoek",17.08,-22.57],"524":["Kathmandu",85.32,27.72],
+  "528":["Amsterdam",4.90,52.37],"554":["Wellington",174.78,-41.29],
+  "558":["Managua",-86.25,12.13],"562":["Niamey",2.11,13.51],
+  "566":["Abuja",7.49,9.06],"578":["Oslo",10.75,59.91],
+  "586":["Islamabad",73.04,33.69],"591":["Panama City",-79.52,8.98],
+  "598":["Port Moresby",147.18,-9.44],"600":["Asuncion",-57.58,-25.26],
+  "604":["Lima",-77.04,-12.05],"608":["Manila",120.98,14.60],
+  "616":["Warsaw",21.01,52.23],"620":["Lisbon",-9.14,38.74],
+  "634":["Doha",51.53,25.29],"642":["Bucharest",26.10,44.43],
+  "643":["Moscow",37.62,55.76],"646":["Kigali",29.87,-1.94],
+  "682":["Riyadh",46.72,24.69],"686":["Dakar",-17.44,14.69],
+  "688":["Belgrade",20.46,44.82],"702":["Singapore",103.85,1.29],
+  "703":["Bratislava",17.11,48.14],"704":["Hanoi",105.85,21.03],
+  "705":["Ljubljana",14.51,46.06],"706":["Mogadishu",45.34,2.05],
+  "710":["Pretoria",28.23,-25.75],"716":["Harare",31.05,-17.83],
+  "724":["Madrid",-3.70,40.42],"728":["Juba",31.60,4.85],
+  "729":["Khartoum",32.53,15.59],"748":["Mbabane",31.13,-26.32],
+  "752":["Stockholm",18.07,59.33],"756":["Bern",7.45,46.95],
+  "760":["Damascus",36.29,33.51],"762":["Dushanbe",68.77,38.56],
+  "764":["Bangkok",100.50,13.76],"768":["Lome",1.22,6.14],
+  "784":["Abu Dhabi",54.37,24.45],"788":["Tunis",10.17,36.81],
+  "792":["Ankara",32.87,39.93],"795":["Ashgabat",58.38,37.95],
+  "800":["Kampala",32.58,0.31],"804":["Kyiv",30.52,50.45],
+  "818":["Cairo",31.24,30.04],"826":["London",-0.12,51.51],
+  "834":["Dodoma",35.74,-6.16],"840":["Washington D.C.",-77.04,38.90],
+  "854":["Ouagadougou",-1.52,12.37],"858":["Montevideo",-56.16,-34.88],
+  "860":["Tashkent",69.28,41.30],"862":["Caracas",-66.90,10.50],
+  "887":["Sanaa",44.21,15.35],"894":["Lusaka",28.28,-15.42]
+};
+
+/* ===========================================================
+   MAJOR PORTS - [name, longitude, latitude] per country
+   Up to 3 major commercial/container ports per maritime nation
+   =========================================================== */
+var ports_data = {
+  "012":[["Algiers",3.06,36.75],["Oran",-0.63,35.70]],
+  "024":[["Luanda",13.23,-8.84],["Lobito",13.54,-12.35]],
+  "036":[["Sydney",151.21,-33.87],["Melbourne",144.96,-37.81],["Brisbane",153.03,-27.47]],
+  "048":[["Mina Salman",50.60,26.22]],
+  "050":[["Chittagong",91.83,22.33],["Mongla",89.60,22.49]],
+  "056":[["Antwerp",4.40,51.22],["Zeebrugge",3.20,51.33]],
+  "076":[["Santos",-46.33,-23.96],["Rio de Janeiro",-43.17,-22.91],["Paranagua",-48.51,-25.52]],
+  "104":[["Yangon",96.17,16.87],["Sittwe",92.90,20.15]],
+  "116":[["Sihanoukville",103.52,10.63]],
+  "120":[["Douala",9.70,4.05]],
+  "124":[["Vancouver",-123.11,49.28],["Montreal",-73.55,45.51],["Halifax",-63.57,44.65]],
+  "144":[["Colombo",79.86,6.93],["Hambantota",81.12,6.12]],
+  "152":[["Valparaiso",-71.63,-33.05],["San Antonio",-71.62,-33.59]],
+  "156":[["Shanghai",121.47,31.23],["Shenzhen",114.07,22.54],["Guangzhou",113.26,23.13]],
+  "170":[["Cartagena",-75.51,10.39],["Buenaventura",-77.02,3.88]],
+  "178":[["Pointe-Noire",11.86,-4.80]],
+  "180":[["Matadi",13.44,-5.82]],
+  "196":[["Limassol",33.04,34.67]],
+  "208":[["Copenhagen",12.60,55.69]],
+  "218":[["Guayaquil",-79.90,-2.19]],
+  "226":[["Malabo",8.78,3.75]],
+  "232":[["Massawa",39.47,15.61]],
+  "233":[["Tallinn",24.75,59.44]],
+  "246":[["Helsinki",24.94,60.17]],
+  "250":[["Marseille",5.37,43.30],["Le Havre",0.11,49.49]],
+  "266":[["Libreville",9.45,0.39],["Port-Gentil",8.78,-0.72]],
+  "268":[["Batumi",41.64,41.65]],
+  "276":[["Hamburg",9.99,53.55],["Bremerhaven",8.58,53.54]],
+  "288":[["Tema",0.02,5.64],["Takoradi",-1.75,4.88]],
+  "300":[["Piraeus",23.64,37.94],["Thessaloniki",22.94,40.63]],
+  "332":[["Port-au-Prince",-72.34,18.54]],
+  "356":[["Mumbai",72.88,19.08],["Chennai",80.27,13.08],["Mundra",69.72,22.84]],
+  "360":[["Jakarta",106.85,-6.21],["Surabaya",112.75,-7.25],["Tanjung Priok",106.89,-6.10]],
+  "364":[["Bandar Abbas",56.28,27.19],["Chabahar",60.64,25.30]],
+  "368":[["Basra",47.78,30.51],["Umm Qasr",47.95,30.04]],
+  "372":[["Dublin",-6.23,53.35]],
+  "376":[["Haifa",34.99,32.82],["Ashdod",34.65,31.80]],
+  "380":[["Genoa",8.93,44.41],["Gioia Tauro",15.90,38.43],["Trieste",13.77,45.65]],
+  "384":[["Abidjan",-4.03,5.31],["San Pedro",-6.64,4.75]],
+  "392":[["Tokyo",139.69,35.69],["Yokohama",139.64,35.44],["Kobe",135.20,34.69]],
+  "398":[["Aktau",51.15,43.65]],
+  "400":[["Aqaba",35.01,29.53]],
+  "404":[["Mombasa",39.66,-4.04]],
+  "408":[["Nampo",125.41,38.74]],
+  "410":[["Busan",129.04,35.10],["Incheon",126.63,37.46]],
+  "414":[["Shuwaikh",47.92,29.35]],
+  "418":[["Vientiane",102.63,17.97]],
+  "422":[["Beirut",35.50,33.89],["Tripoli",35.84,34.44]],
+  "434":[["Misrata",15.09,32.38],["Benghazi",20.07,32.12]],
+  "450":[["Toamasina",49.38,-18.15]],
+  "454":[["Monkey Bay",35.14,-14.08]],
+  "458":[["Port Klang",101.39,3.00],["Tanjung Pelepas",103.55,1.37],["Penang",100.35,5.42]],
+  "462":[["Male",73.51,4.18]],
+  "478":[["Nouakchott",-15.98,18.09]],
+  "480":[["Port Louis",57.50,-20.16]],
+  "484":[["Manzanillo",-104.32,19.05],["Lazaro Cardenas",-102.18,17.96]],
+  "504":[["Tanger-Med",-5.50,35.89],["Casablanca",-7.62,33.59]],
+  "508":[["Maputo",32.59,-25.97],["Beira",34.87,-19.84]],
+  "512":[["Sohar",56.73,24.35],["Salalah",54.00,16.94],["Duqm",57.70,19.67]],
+  "516":[["Walvis Bay",14.51,-22.96]],
+  "524":[],
+  "528":[["Rotterdam",4.48,51.92],["Amsterdam",4.90,52.37]],
+  "554":[["Auckland",174.76,-36.84],["Tauranga",176.17,-37.69]],
+  "566":[["Lagos",3.39,6.45],["Port Harcourt",7.01,4.78]],
+  "578":[["Bergen",5.32,60.39],["Stavanger",5.73,58.97]],
+  "586":[["Karachi",67.01,24.86],["Gwadar",62.33,25.12]],
+  "591":[["Colon",-79.90,9.36],["Balboa",-79.56,8.95]],
+  "598":[["Lae",147.00,-6.73],["Port Moresby",147.18,-9.44]],
+  "604":[["Callao",-77.14,-12.05]],
+  "608":[["Manila",120.98,14.60],["Cebu",123.90,10.31]],
+  "616":[["Gdansk",18.65,54.35],["Gdynia",18.54,54.52]],
+  "620":[["Lisbon",-9.14,38.74],["Sines",-8.87,37.95]],
+  "634":[["Hamad Port",51.60,25.02]],
+  "642":[["Constanta",28.65,44.17]],
+  "643":[["St. Petersburg",30.32,59.93],["Vladivostok",131.87,43.12],["Novorossiysk",37.77,44.72]],
+  "682":[["Jeddah",39.17,21.49],["Dammam",50.10,26.43],["King Abdullah",35.95,22.84]],
+  "686":[["Dakar",-17.44,14.69]],
+  "688":[["Belgrade",20.46,44.82]],
+  "702":[["Singapore",103.85,1.29]],
+  "704":[["Ho Chi Minh City",106.63,10.76],["Hai Phong",106.68,20.86]],
+  "706":[["Mogadishu",45.34,2.05],["Berbera",45.04,10.44]],
+  "710":[["Durban",31.03,-29.86],["Cape Town",18.42,-33.92],["Richards Bay",32.04,-28.78]],
+  "716":[["Beira",34.87,-19.84]],
+  "724":[["Valencia",-0.38,39.47],["Barcelona",2.17,41.39],["Algeciras",-5.45,36.13]],
+  "728":[],
+  "729":[["Port Sudan",37.22,19.62]],
+  "752":[["Gothenburg",11.97,57.71]],
+  "760":[["Latakia",35.78,35.52],["Tartus",35.89,34.89]],
+  "764":[["Laem Chabang",100.88,13.08],["Bangkok",100.57,13.70]],
+  "768":[["Lome",1.28,6.13]],
+  "784":[["Jebel Ali",55.03,25.00],["Abu Dhabi",54.65,24.53],["Fujairah",56.35,25.12]],
+  "788":[["Rades",10.28,36.77]],
+  "792":[["Istanbul",29.01,41.01],["Mersin",34.63,36.80],["Izmir",27.14,38.42]],
+  "795":[["Turkmenbashi",52.97,40.05]],
+  "800":[],
+  "804":[["Odesa",30.73,46.48]],
+  "818":[["Port Said",32.30,31.26],["Alexandria",29.92,31.20],["Suez",32.55,29.97]],
+  "826":[["London",0.05,51.51],["Felixstowe",1.31,51.96],["Southampton",-1.40,50.90]],
+  "834":[["Dar es Salaam",39.28,-6.82]],
+  "840":[["Los Angeles",-118.25,33.73],["New York",-74.01,40.71],["Houston",-95.07,29.73]],
+  "858":[["Montevideo",-56.16,-34.88]],
+  "862":[["Puerto Cabello",-68.01,10.47],["La Guaira",-66.93,10.60]],
+  "887":[["Aden",45.04,12.79],["Hodeidah",42.95,14.80]],
+  "894":[]};
 
 /* ===========================================================
    OFFICIAL INDIA BOUNDARY (Datameet / Survey of India)
@@ -157,11 +368,19 @@ var ports = [
    SEA LANES
    =========================================================== */
 var lanes = [
-  [[56.4,26.6],[60,24],[64,21],[68,18],[72,14],[75,10],[78,7],[82,4],[88,3],[95,3],[100.2,3.5]],
-  [[43.4,12.6],[50,10],[58,8],[66,6],[72,5],[78,5],[84,4],[90,3],[95,3]],
-  [[18.5,-34.4],[28,-28],[38,-20],[42,-16],[48,-10],[54,-3],[60,4],[66,9],[70,14]],
-  [[100.2,3.5],[105,6],[110,10],[118,18],[125,28],[130,35]],
-  [[32.3,30.5],[35,27],[38,22],[40,17],[42,14],[43.4,12.6]],
+  {c:[[56.4,26.6],[60,24],[64,21],[68,18],[72,14],[75,10],[78,7],[82,4],[88,3],[95,3],[100.2,3.5]], m:1},
+  {c:[[43.4,12.6],[50,10],[58,8],[66,6],[72,5],[78,5],[84,4],[90,3],[95,3]], m:1},
+  {c:[[18.5,-34.4],[28,-28],[38,-20],[42,-16],[48,-10],[54,-3],[60,4],[66,9],[70,14]], m:1},
+  {c:[[100.2,3.5],[105,6],[110,10],[115,15],[120,20],[125,28],[130,35]], m:1},
+  {c:[[32.3,30.5],[35,27],[38,22],[40,17],[42,14],[43.4,12.6]], m:1},
+  {c:[[-5.5,36],[0,37],[8,37],[15,35],[22,34],[28,33],[30,31],[32.3,30.5]]},
+  {c:[[-5,50],[-8,47],[-10,43],[-8,39],[-5.5,36]]},
+  {c:[[39.5,-7],[41,-3],[43,0],[44,5],[45,10],[43.4,12.6]]},
+  {c:[[70,14],[68,17],[65,20],[60,24],[56.4,26.6]]},
+  {c:[[80,13],[83,10],[86,8],[90,5],[95,3],[100.2,3.5]]},
+  {c:[[115,-32],[114,-20],[116,-8.4],[112,-3],[108,0],[104,1.5],[100.2,3.5]]},
+  {c:[[-3,5],[-5,-5],[-2,-15],[5,-25],[12,-32],[18.5,-34.4]]},
+  {c:[[-45,-25],[-35,-28],[-20,-32],[-5,-34],[10,-34.5],[18.5,-34.4]]},
 ];
 
 /* ===========================================================
@@ -276,13 +495,285 @@ svg.append("path").datum(d3.geoGraticule().step([20,20])()).attr("d", pathGen)
 /* -----------------------------------------------------------
    LAYER 2: Sea lanes (below land, very subtle)
    ----------------------------------------------------------- */
-lanes.forEach(function(coords){
-  svg.append("path")
-    .datum({type:"LineString", coordinates:coords})
+var lanePaths = [];
+lanes.forEach(function(lane, i){
+  var p = svg.append("path")
+    .datum({type:"LineString", coordinates:lane.c})
     .attr("d", pathGen).attr("fill","none")
-    .attr("stroke", seaLaneC).attr("stroke-width",1.0)
-    .attr("stroke-dasharray","5,4").attr("stroke-linecap","round");
+    .attr("stroke", lane.m ? "rgba(200,148,60,0.28)" : "rgba(200,148,60,0.13)")
+    .attr("stroke-width", lane.m ? 1.4 : 0.8)
+    .attr("stroke-dasharray", lane.m ? "6,4" : "4,3")
+    .attr("stroke-linecap","round")
+    .attr("class","lane")
+    .attr("data-idx", i);
+  lanePaths.push({el:p, m:lane.m});
 });
+
+/* -----------------------------------------------------------
+   PER-PORT ROUTES TO INDIA
+   Each port has a complete waypoint path to a specific Indian port.
+   No shared lanes, no connectors - each is a full sea route.
+   ----------------------------------------------------------- */
+var MUMBAI=[72.88,19.08], CHENNAI=[80.27,13.08], KOLKATA=[88.36,22.57];
+
+// Reusable waypoint chains (building blocks)
+var VIA_SUEZ_TO_MUMBAI=[[32.3,30.5],[35,27],[38,22],[40,17],[43.4,12.6],[50,11],[58,14],[66,18],MUMBAI];
+var VIA_GIB_SUEZ_MUMBAI=[[-5.5,36],[2,37],[10,36],[18,35],[25,33],[30,31]].concat(VIA_SUEZ_TO_MUMBAI);
+var VIA_CHANNEL_GIB_SUEZ_MUMBAI=[[-5,50],[-8,47],[-9,42],[-7,38]].concat(VIA_GIB_SUEZ_MUMBAI);
+var VIA_MALACCA_TO_CHENNAI=[[100.2,3.5],[97,5],[92,7],[86,10],CHENNAI];
+var VIA_SCS_MALACCA_CHENNAI=[[112,8],[108,5],[104,2]].concat(VIA_MALACCA_TO_CHENNAI);
+var VIA_NESCS_MALACCA_CHENNAI=[[125,28],[120,20],[115,12]].concat(VIA_SCS_MALACCA_CHENNAI);
+var VIA_CAPE_TO_MUMBAI=[[18.5,-34.4],[28,-28],[38,-18],[44,-8],[50,0],[56,6],[62,12],[68,17],MUMBAI];
+var VIA_BAB_TO_MUMBAI=[[43.4,12.6],[50,11],[58,14],[66,18],MUMBAI];
+
+// Per-port routes: portRoutes[countryId] = [{n:"PortName", r:[waypoints to Indian port]}]
+var portRoutes = {
+  // === UNITED STATES ===
+  "840":[
+    {n:"Los Angeles",r:[[-118.25,33.73],[-130,28],[-145,22],[-160,15],[-175,8],[180,3],[165,0],[150,-2],[135,-5],[120,-8],[116,-8],[110,-3],[104,1.5]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"New York",r:[[-74,40.7],[-65,38],[-50,36],[-30,36],[-15,36]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Houston",r:[[-95,29.7],[-85,27],[-78,25],[-70,30],[-60,35],[-40,36],[-20,36]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+  // === RUSSIA ===
+  "643":[
+    {n:"St. Petersburg",r:[[30.3,59.9],[22,58],[12,56],[5,53],[0,51]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)},
+    {n:"Vladivostok",r:[[131.9,43.1],[132,40],[132,36],[131,32],[130,28],[128,23],[126,18],[123,14],[120,10],[117,7],[114,5],[110,4],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Novorossiysk",r:[[37.8,44.7],[33,43],[29,41],[26,39],[23,37],[20,36],[18,35.5],[20,34],[24,33],[28,32],[30,31],[32.3,30.5]].concat(VIA_SUEZ_TO_MUMBAI)}
+  ],
+  // === CHINA ===
+  "156":[
+    {n:"Shanghai",r:[[121.5,31.2],[123,29],[124,26],[123,22],[121,18],[119,14],[116,10],[113,7],[110,5],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Shenzhen",r:[[114.1,22.5],[115,21],[116,18],[116,14],[115,10],[113,7],[110,5],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Guangzhou",r:[[113.3,23.1],[115,21],[116,18],[116,14],[115,10],[113,7],[110,5],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === JAPAN ===
+  "392":[
+    {n:"Tokyo",r:[[139.7,35.7],[140,33],[139,29],[137,25],[134,20],[130,16],[126,12],[122,9],[118,7],[114,5],[110,4],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Yokohama",r:[[139.6,35.4],[140,33],[139,29],[137,25],[134,20],[130,16],[126,12],[122,9],[118,7],[114,5],[110,4],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Kobe",r:[[135.2,34.7],[136,32],[136,28],[134,24],[132,20],[128,15],[124,11],[120,8],[116,6],[112,4],[108,3],[105,2]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === SOUTH KOREA ===
+  "410":[
+    {n:"Busan",r:[[129,35.1],[130,32],[130,28],[128,23],[126,18],[123,14],[120,10],[117,7],[114,5],[110,4],[107,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Incheon",r:[[126.6,37.5],[128,35],[130,31],[130,27],[128,22],[125,17],[122,13],[119,9],[116,6],[113,4],[109,3],[106,2],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === BRAZIL ===
+  "076":[
+    {n:"Santos",r:[[-46.3,-24],[-42,-27],[-36,-30],[-28,-33],[-18,-35],[-8,-36],[2,-36],[10,-36],[16,-35.5],[18.5,-34.4],[22,-32],[28,-28],[35,-22],[40,-16],[46,-8],[52,0],[58,8],[64,15],MUMBAI]},
+    {n:"Rio de Janeiro",r:[[-43.2,-22.9],[-38,-26],[-32,-30],[-22,-34],[-12,-36],[-2,-36],[8,-36],[14,-35.5],[18.5,-34.4],[22,-32],[28,-28],[35,-22],[40,-16],[46,-8],[52,0],[58,8],[64,15],MUMBAI]},
+    {n:"Paranagua",r:[[-48.5,-25.5],[-44,-28],[-38,-31],[-28,-34],[-18,-36],[-8,-36],[2,-36],[10,-36],[16,-35.5],[18.5,-34.4],[22,-32],[28,-28],[35,-22],[40,-16],[46,-8],[52,0],[58,8],[64,15],MUMBAI]}
+  ],
+  // === UK ===
+  "826":[
+    {n:"London",r:[[0.05,51.5],[0,50],[-2,49]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)},
+    {n:"Felixstowe",r:[[1.3,52],[0,51],[-2,49]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)},
+    {n:"Southampton",r:[[-1.4,50.9],[-3,49]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)}
+  ],
+  // === GERMANY ===
+  "276":[
+    {n:"Hamburg",r:[[10,53.6],[6,53],[2,52],[0,51]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)},
+    {n:"Bremerhaven",r:[[8.6,53.5],[5,53],[2,52],[0,51]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)}
+  ],
+  // === FRANCE ===
+  "250":[
+    {n:"Marseille",r:[[5.4,43.3],[3,40],[0,38],[-3,37]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Le Havre",r:[[0.1,49.5],[-2,48],[-5,47]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)}
+  ],
+  // === NETHERLANDS ===
+  "528":[
+    {n:"Rotterdam",r:[[4.5,51.9],[2,52],[0,51]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)},
+    {n:"Amsterdam",r:[[4.9,52.4],[2,52],[0,51]].concat(VIA_CHANNEL_GIB_SUEZ_MUMBAI)}
+  ],
+  // === ITALY ===
+  "380":[
+    {n:"Genoa",r:[[8.9,44.4],[6,42],[2,39],[0,37]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Trieste",r:[[13.8,45.7],[14,43],[15,40],[18,37],[22,35],[26,33]].concat(VIA_SUEZ_TO_MUMBAI)}
+  ],
+  // === SPAIN ===
+  "724":[
+    {n:"Valencia",r:[[-0.4,39.5],[-2,38],[-5,36.5]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Barcelona",r:[[2.2,41.4],[0,39],[-3,37]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Algeciras",r:[[-5.5,36.1]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+  // === UAE ===
+  "784":[
+    {n:"Jebel Ali",r:[[55,25],[56.4,26.6],[60,24],[65,20],MUMBAI]},
+    {n:"Abu Dhabi",r:[[54.7,24.5],[56,26],[60,24],[65,20],MUMBAI]},
+    {n:"Fujairah",r:[[56.4,25.1],[58,24],[62,21],[68,18],MUMBAI]}
+  ],
+  // === SAUDI ARABIA ===
+  "682":[
+    {n:"Jeddah",r:[[39.2,21.5],[41,18],[43.4,12.6]].concat(VIA_BAB_TO_MUMBAI)},
+    {n:"Dammam",r:[[50.1,26.4],[52,26],[56.4,26.6],[60,24],[65,20],MUMBAI]},
+    {n:"King Abdullah",r:[[36,22.8],[38,19],[42,15],[43.4,12.6]].concat(VIA_BAB_TO_MUMBAI)}
+  ],
+  // === IRAN ===
+  "364":[
+    {n:"Bandar Abbas",r:[[56.3,27.2],[58,25],[62,22],[68,18],MUMBAI]},
+    {n:"Chabahar",r:[[60.6,25.3],[63,22],[68,18],MUMBAI]}
+  ],
+  // === AUSTRALIA ===
+  "036":[
+    {n:"Sydney",r:[[151.2,-33.9],[152,-30],[153,-27],[153,-23],[152,-19],[150,-16],[148,-14],[146,-12],[144,-11],[142,-11],[139,-12],[136,-12],[132,-12],[128,-12],[124,-11],[120,-10],[117,-9.5],[116,-8.4],[114,-7],[111,-5],[108,-3],[105,-1],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Melbourne",r:[[145,-37.8],[147,-36],[149,-34],[151,-31],[152,-28],[153,-24],[152,-20],[150,-17],[148,-14],[146,-12],[144,-11],[142,-11],[139,-12],[136,-12],[132,-12],[128,-12],[124,-11],[120,-10],[117,-9.5],[116,-8.4],[114,-7],[111,-5],[108,-3],[105,-1],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Brisbane",r:[[153,-27.5],[153,-24],[152,-20],[150,-17],[148,-14],[146,-12],[144,-11],[142,-11],[139,-12],[136,-12],[132,-12],[128,-12],[124,-11],[120,-10],[117,-9.5],[116,-8.4],[114,-7],[111,-5],[108,-3],[105,-1],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === SOUTH AFRICA ===
+  "710":[
+    {n:"Durban",r:[[31,-29.9],[33,-26],[36,-20],[40,-14],[44,-6],[48,0],[54,6],[60,12],[66,16],MUMBAI]},
+    {n:"Cape Town",r:[[18.4,-33.9],[20,-34],[22,-33],[26,-28],[32,-22],[38,-16],[44,-8],[50,0],[56,6],[62,12],[68,17],MUMBAI]},
+    {n:"Richards Bay",r:[[32,-28.8],[34,-25],[37,-19],[41,-12],[46,-4],[50,2],[56,8],[62,13],[68,17],MUMBAI]}
+  ],
+  // === TURKEY ===
+  "792":[
+    {n:"Istanbul",r:[[29,41],[26,39],[22,37],[18,36],[14,35.5],[10,36]].concat(VIA_GIB_SUEZ_MUMBAI.slice(3))},
+    {n:"Mersin",r:[[34.6,36.8],[33,35],[31,33],[30,31]].concat(VIA_SUEZ_TO_MUMBAI)},
+    {n:"Izmir",r:[[27.1,38.4],[24,37],[20,36],[15,35.5]].concat(VIA_GIB_SUEZ_MUMBAI.slice(3))}
+  ],
+  // === EGYPT ===
+  "818":[
+    {n:"Port Said",r:[[32.3,31.3]].concat(VIA_SUEZ_TO_MUMBAI)},
+    {n:"Alexandria",r:[[29.9,31.2],[31,31],[32.3,30.5]].concat(VIA_SUEZ_TO_MUMBAI)},
+    {n:"Suez",r:[[32.6,30]].concat(VIA_SUEZ_TO_MUMBAI)}
+  ],
+  // === MALAYSIA ===
+  "458":[
+    {n:"Port Klang",r:[[101.4,3],[100.5,3.2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Tanjung Pelepas",r:[[103.6,1.4],[102,2]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === SINGAPORE ===
+  "702":[{n:"Singapore",r:[[103.9,1.3],[102,2]].concat(VIA_MALACCA_TO_CHENNAI)}],
+  // === INDONESIA ===
+  "360":[
+    {n:"Jakarta",r:[[106.9,-6.1],[106,-5],[105,-3],[104,-1],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Surabaya",r:[[112.8,-7.3],[111,-6.5],[109,-5],[107,-3.5],[105,-2],[103,0],[101,1.5]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === VIETNAM ===
+  "704":[
+    {n:"Ho Chi Minh City",r:[[106.6,10.8],[107,8],[107,5],[105,3],[103,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Hai Phong",r:[[106.7,20.9],[108,19],[110,16],[111,12],[110,8],[108,5],[106,3],[104,2]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === THAILAND ===
+  "764":[
+    {n:"Laem Chabang",r:[[100.9,13.1],[100.5,10],[100,6],[99,4]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Bangkok",r:[[100.6,13.7],[100.5,10],[100,6],[99,4]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === PHILIPPINES ===
+  "608":[
+    {n:"Manila",r:[[121,14.6],[119,12],[117,9],[114,6],[111,4],[108,3],[105,2]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Cebu",r:[[123.9,10.3],[121,9],[118,7],[115,5],[112,4],[109,3],[106,2],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === SRI LANKA ===
+  "144":[
+    {n:"Colombo",r:[[79.9,6.9],[80,8],CHENNAI]},
+    {n:"Hambantota",r:[[81.1,6.1],[81,8],CHENNAI]}
+  ],
+  // === BANGLADESH ===
+  "050":[
+    {n:"Chittagong",r:[[91.8,22.3],[90,20],[89,17],[88.5,15],KOLKATA]},
+    {n:"Mongla",r:[[89.6,22.5],[89,20],[88.5,17],KOLKATA]}
+  ],
+  // === PAKISTAN ===
+  "586":[
+    {n:"Karachi",r:[[67,24.9],[69,22],[71,20],MUMBAI]},
+    {n:"Gwadar",r:[[62.3,25.1],[64,23],[68,20],MUMBAI]}
+  ],
+  // === OMAN ===
+  "512":[
+    {n:"Salalah",r:[[54,17],[58,15],[64,18],MUMBAI]},
+    {n:"Sohar",r:[[56.7,24.4],[58,23],[62,20],[68,18],MUMBAI]},
+    {n:"Duqm",r:[[57.7,19.7],[60,18],[65,18],MUMBAI]}
+  ],
+  // === QATAR ===
+  "634":[{n:"Hamad Port",r:[[51.6,25],[53,26],[56.4,26.6],[60,24],[65,20],MUMBAI]}],
+  // === KUWAIT ===
+  "414":[{n:"Shuwaikh",r:[[47.9,29.4],[50,28],[53,27],[56.4,26.6],[60,24],[65,20],MUMBAI]}],
+  // === IRAQ ===
+  "368":[{n:"Basra",r:[[47.8,30.5],[49,29],[52,27],[56.4,26.6],[60,24],[65,20],MUMBAI]}],
+  // === KENYA ===
+  "404":[{n:"Mombasa",r:[[39.7,-4],[42,-1],[46,4],[50,8],[56,12],[62,15],[68,18],MUMBAI]}],
+  // === TANZANIA ===
+  "834":[{n:"Dar es Salaam",r:[[39.3,-6.8],[41,-4],[44,0],[48,5],[54,10],[60,14],[68,18],MUMBAI]}],
+  // === NIGERIA ===
+  "566":[
+    {n:"Lagos",r:[[3.4,6.5],[4,4],[5,0],[5,-5],[4,-12],[3,-18],[5,-25],[8,-30],[12,-34],[16,-35.5],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,14],MUMBAI]},
+    {n:"Port Harcourt",r:[[7,4.8],[6,2],[5,-2],[5,-8],[4,-15],[4,-22],[6,-28],[10,-33],[15,-35],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,14],MUMBAI]}
+  ],
+  // === CANADA ===
+  "124":[
+    {n:"Vancouver",r:[[-123.1,49.3],[-130,45],[-140,38],[-150,28],[-160,18],[-170,10],[180,3],[165,0],[150,-2],[135,-5],[120,-8],[116,-8],[110,-3],[104,1.5]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Montreal",r:[[-73.6,45.5],[-68,43],[-55,40],[-40,38],[-25,37],[-15,36]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Halifax",r:[[-63.6,44.7],[-55,42],[-40,39],[-25,37],[-15,36]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+  // === GREECE ===
+  "300":[{n:"Piraeus",r:[[23.6,37.9],[26,36],[28,34],[30,32]].concat(VIA_SUEZ_TO_MUMBAI)}],
+  // === ISRAEL ===
+  "376":[
+    {n:"Haifa",r:[[35,32.8],[34,32],[32.3,30.5]].concat(VIA_SUEZ_TO_MUMBAI)},
+    {n:"Ashdod",r:[[34.7,31.8],[33,31],[32.3,30.5]].concat(VIA_SUEZ_TO_MUMBAI)}
+  ],
+  // === MYANMAR ===
+  "104":[{n:"Yangon",r:[[96.2,16.9],[94,14],[90,10],[86,8],CHENNAI]}],
+  // === MOROCCO ===
+  "504":[
+    {n:"Tanger-Med",r:[[-5.5,35.9]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Casablanca",r:[[-7.6,33.6],[-6,35]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+  // === ARGENTINA ===
+  "032":[{n:"Buenos Aires",r:[[-58.4,-34.6],[-52,-35],[-42,-36],[-30,-37],[-18,-37],[-8,-37],[2,-36],[10,-36],[16,-35.5],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,15],MUMBAI]}],
+  // === CHILE ===
+  "152":[{n:"Valparaiso",r:[[-71.6,-33.1],[-68,-35],[-58,-37],[-45,-38],[-30,-38],[-15,-37],[-5,-37],[5,-36],[12,-35.5],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,15],MUMBAI]}],
+  // === PERU ===
+  "604":[{n:"Callao",r:[[-77.1,-12.1],[-78,-18],[-75,-25],[-68,-33],[-55,-37],[-40,-38],[-25,-38],[-10,-37],[2,-36],[12,-35.5],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,15],MUMBAI]}],
+  // === COLOMBIA ===
+  "170":[
+    {n:"Cartagena",r:[[-75.5,10.4],[-72,12],[-65,15],[-55,20],[-40,28],[-25,34],[-15,36]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Buenaventura",r:[[-77,3.9],[-79.5,9],[-78,10],[-75,10.5],[-68,13],[-58,18],[-45,26],[-30,33],[-15,36]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+  // === MEXICO ===
+  "484":[
+    {n:"Manzanillo",r:[[-104.3,19.1],[-110,18],[-125,20],[-145,18],[-165,12],[180,5],[160,0],[140,-4],[120,-8],[116,-8],[110,-3],[104,1.5]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Lazaro Cardenas",r:[[-102.2,18],[-108,18],[-120,20],[-140,18],[-160,12],[180,5],[160,0],[140,-4],[120,-8],[116,-8],[110,-3],[104,1.5]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === NEW ZEALAND ===
+  "554":[
+    {n:"Auckland",r:[[174.8,-36.8],[170,-33],[165,-28],[158,-22],[150,-17],[143,-14],[137,-12],[131,-11],[126,-11],[121,-10],[118,-9.5],[116,-8.4],[114,-7],[111,-5],[108,-3],[105,-1],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)},
+    {n:"Tauranga",r:[[176.2,-37.7],[172,-35],[166,-30],[160,-24],[152,-18],[145,-14],[139,-12],[133,-11],[128,-11],[123,-10.5],[119,-10],[117,-9.5],[116,-8.4],[114,-7],[111,-5],[108,-3],[105,-1],[103,1]].concat(VIA_MALACCA_TO_CHENNAI)}
+  ],
+  // === GHANA ===
+  "288":[{n:"Tema",r:[[0,5.6],[1,2],[2,-3],[3,-10],[4,-18],[5,-25],[8,-32],[12,-34.5],[16,-35.5],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,15],MUMBAI]}],
+  // === SENEGAL ===
+  "686":[{n:"Dakar",r:[[-17.4,14.7],[-17,10],[-14,3],[-10,-5],[-6,-14],[-2,-22],[2,-28],[6,-32],[12,-35],[16,-35.5],[18.5,-34.4],[22,-32],[28,-26],[34,-20],[40,-14],[46,-6],[52,2],[58,8],[64,15],MUMBAI]}],
+  // === ALGERIA ===
+  "012":[
+    {n:"Algiers",r:[[3.1,36.8],[0,37],[-3,36.5]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Oran",r:[[-0.6,35.7],[-3,36]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+  // === SUDAN ===
+  "729":[{n:"Port Sudan",r:[[37.2,19.6],[38,18],[40,15],[43.4,12.6]].concat(VIA_BAB_TO_MUMBAI)}],
+  // === YEMEN ===
+  "887":[
+    {n:"Aden",r:[[45,12.8],[46,12]].concat(VIA_BAB_TO_MUMBAI)},
+    {n:"Hodeidah",r:[[43,14.8],[43.4,12.6]].concat(VIA_BAB_TO_MUMBAI)}
+  ],
+  // === MOZAMBIQUE ===
+  "508":[
+    {n:"Maputo",r:[[32.6,-26],[34,-22],[36,-16],[40,-10],[44,-4],[48,2],[54,8],[60,13],[66,17],MUMBAI]},
+    {n:"Beira",r:[[34.9,-19.8],[37,-15],[40,-10],[44,-4],[48,2],[54,8],[60,13],[66,17],MUMBAI]}
+  ],
+  // === MADAGASCAR ===
+  "450":[{n:"Toamasina",r:[[49.4,-18.2],[48,-14],[46,-8],[48,-2],[52,4],[58,10],[64,15],[68,18],MUMBAI]}],
+  // === JORDAN ===
+  "400":[{n:"Aqaba",r:[[35,29.5],[34,29],[33,28],[32.5,30]].concat(VIA_SUEZ_TO_MUMBAI)}],
+  // === PORTUGAL ===
+  "620":[
+    {n:"Lisbon",r:[[-9.1,38.7],[-8,38],[-6,37]].concat(VIA_GIB_SUEZ_MUMBAI)},
+    {n:"Sines",r:[[-8.9,38],[-7,37],[-6,36.5]].concat(VIA_GIB_SUEZ_MUMBAI)}
+  ],
+};
+
+var lastHoverRoute = null;
+var routeGroup = null;
 
 /* -----------------------------------------------------------
    LAYER 3: All countries from Natural Earth 50m
@@ -299,16 +790,94 @@ svg.selectAll(".country")
     .attr("cursor","pointer")
     .on("mousemove", function(ev, d){
       var n = names[d.id] || "";
+      if(d.id === "356") n = "India";
+      var cap = capitals[d.id];
+      var pts = ports_data[d.id] || [];
+      var route = portRoutes[d.id];
+      var capText = cap ? " | Capital: " + cap[0] : "";
+      var portText = pts.length > 0 ? " | Ports: " + pts.map(function(p){return p[0];}).join(", ") : "";
+      var destText = "";
+      if(route){
+        destText = " | " + route.map(function(pr){
+          var dest=pr.r[pr.r.length-1];
+          var dn=(dest[0]===80.27&&dest[1]===13.08)?"Chennai":(dest[0]===88.36&&dest[1]===22.57)?"Kolkata":"Mumbai";
+          return pr.n+" -> "+dn;
+        }).join(", ");
+      }
       if(n){
         tip.style("display","block")
-          .style("left",(ev.clientX+12)+"px")
-          .style("top",(ev.clientY-10)+"px")
-          .text(n);
+          .style("left",(ev.clientX+14)+"px")
+          .style("top",(ev.clientY-12)+"px")
+          .text(n + capText + portText + destText);
+      }
+      if(cap){
+        var cp = proj([cap[1], cap[2]]);
+        if(cp && !isNaN(cp[0])){
+          capRing.attr("cx",cp[0]).attr("cy",cp[1]).attr("display","block");
+          capDot.attr("cx",cp[0]).attr("cy",cp[1]).attr("display","block");
+          capLabel.attr("x",cp[0]+8).attr("y",cp[1]+4).text(cap[0]).attr("display","block");
+        }
+      }
+      // Show port markers
+      portMarkers.forEach(function(pm,i){
+        if(i < pts.length){
+          var pp = proj([pts[i][1], pts[i][2]]);
+          if(pp && !isNaN(pp[0])){
+            pm.dot.attr("x",pp[0]-2.5).attr("y",pp[1]-2.5).attr("display","block");
+            pm.label.attr("x",pp[0]+7).attr("y",pp[1]+3).text(pts[i][0]).attr("display","block");
+          }
+        } else {
+          pm.dot.attr("display","none");
+          pm.label.attr("display","none");
+        }
+      });
+      // Draw per-port shipping routes
+      if(d.id !== lastHoverRoute){
+        lastHoverRoute = d.id;
+        routeGroup.selectAll("*").remove();
+        var pRoutes = portRoutes[d.id];
+        if(pRoutes && pRoutes.length > 0){
+          pRoutes.forEach(function(pr){
+            // Glow
+            routeGroup.append("path")
+              .datum({type:"LineString", coordinates:pr.r})
+              .attr("d", pathGen).attr("fill","none")
+              .attr("stroke","rgba(80,180,255,0.25)")
+              .attr("stroke-width",3).attr("stroke-linecap","round");
+            // Main line
+            routeGroup.append("path")
+              .datum({type:"LineString", coordinates:pr.r})
+              .attr("d", pathGen).attr("fill","none")
+              .attr("stroke","rgba(80,180,255,0.7)")
+              .attr("stroke-width",1.5)
+              .attr("stroke-dasharray","6,4")
+              .attr("stroke-linecap","round");
+          });
+          // Dim base sea lanes
+          lanePaths.forEach(function(lp){
+            lp.el.attr("stroke","rgba(200,148,60,0.05)")
+              .attr("stroke-width", lp.m ? 0.8 : 0.4);
+          });
+        }
       }
       if(d.id !== "356") d3.select(this).attr("fill","#263e58");
     })
     .on("mouseout", function(ev, d){
       tip.style("display","none");
+      capRing.attr("display","none");
+      capDot.attr("display","none");
+      capLabel.attr("display","none");
+      portMarkers.forEach(function(pm){
+        pm.dot.attr("display","none");
+        pm.label.attr("display","none");
+      });
+      // Reset lanes and clear routes
+      lanePaths.forEach(function(lp){
+        lp.el.attr("stroke", lp.m ? "rgba(200,148,60,0.28)" : "rgba(200,148,60,0.13)")
+          .attr("stroke-width", lp.m ? 1.4 : 0.8);
+      });
+      routeGroup.selectAll("*").remove();
+      lastHoverRoute = null;
       if(d.id !== "356") d3.select(this).attr("fill", land);
     });
 
@@ -488,7 +1057,44 @@ cg.append("circle").attr("r",20)
     .text(d[0]);
 });
 
-console.log("Map v5 rendered.");
+/* -----------------------------------------------------------
+   CAPITAL MARKER (hidden by default, shown on hover)
+   ----------------------------------------------------------- */
+var capRing = svg.append("circle")
+  .attr("r", 6).attr("fill","none")
+  .attr("stroke","#f0c040").attr("stroke-width",1.5)
+  .attr("opacity",0.8).attr("display","none");
+
+var capDot = svg.append("circle")
+  .attr("r", 2.5).attr("fill","#f0c040")
+  .attr("opacity",0.9).attr("display","none");
+
+var capLabel = svg.append("text")
+  .attr("fill","#f0d870").attr("font-size","8px")
+  .attr("font-weight",600).attr("display","none");
+
+/* -----------------------------------------------------------
+   PORT MARKERS (pool of 3, hidden by default, shown on hover)
+   ----------------------------------------------------------- */
+var portMarkers = [];
+for(var i = 0; i < 3; i++){
+  var dot = svg.append("rect")
+    .attr("width",5).attr("height",5)
+    .attr("fill","#4a90d9").attr("opacity",0.85)
+    .attr("rx",1)
+    .attr("display","none");
+  var label = svg.append("text")
+    .attr("fill","#70b8f0").attr("font-size","7px")
+    .attr("font-weight",500).attr("display","none");
+  portMarkers.push({dot: dot, label: label});
+}
+
+/* -----------------------------------------------------------
+   ROUTE LINES GROUP (per-port routes drawn on hover)
+   ----------------------------------------------------------- */
+routeGroup = svg.append("g").attr("class","routes");
+
+console.log("Map v7 rendered.");
 })();
 </script>
 </body>
