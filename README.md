@@ -79,4 +79,4 @@ The map code is open source. World geography data is from [Natural Earth](https:
 
 ## Author
 
-**Nimit Mehra** - [nimitmehra.com](https://nimitmehra.com) - [@nikiloops](https://twitter.com/nikiloops)
+**Nimit Mehra** - [nimitmehra.com](https://nimitmehra.com) - [@NimitMehra](https://twitter.com/NimitMehra)
