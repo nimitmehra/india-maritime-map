@@ -395,8 +395,8 @@ var cLabels = [
   ["104",0,0,7],["586",0,-4,7],["004",0,0,7],
   ["398",0,0,8],["496",0,0,8],
   ["250",0,0,7],["706",0,0,6],["404",0,0,6],
-  ["012",0,0,7],["840",0,5,8],["124",0,0,8],
-  ["076",0,0,8],["434",0,0,7],
+  ["012",0,0,7],
+  ["434",0,0,7],
 ];
 
 /* ===========================================================
@@ -943,6 +943,39 @@ cLabels.forEach(function(arr){
     .attr("letter-spacing","0.8px")
     .text((names[arr[0]]||"").toUpperCase());
 });
+
+// US label - manually positioned (centroid fails because US is split across map edges)
+var usPos = proj([-98, 40]);
+if(usPos && !isNaN(usPos[0]) && usPos[0]>15 && usPos[0]<W-15){
+  svg.append("text")
+    .attr("x", usPos[0]).attr("y", usPos[1])
+    .attr("fill", cntLbl).attr("font-size","8px")
+    .attr("font-weight",400).attr("text-anchor","middle")
+    .attr("letter-spacing","0.8px")
+    .text("UNITED STATES");
+}
+
+// Canada label - also split across map edges
+var caPos = proj([-100, 58]);
+if(caPos && !isNaN(caPos[0]) && caPos[0]>15 && caPos[0]<W-15){
+  svg.append("text")
+    .attr("x", caPos[0]).attr("y", caPos[1])
+    .attr("fill", cntLbl).attr("font-size","8px")
+    .attr("font-weight",400).attr("text-anchor","middle")
+    .attr("letter-spacing","0.8px")
+    .text("CANADA");
+}
+
+// Brazil label - at far edge, centroid unreliable
+var brPos = proj([-52, -10]);
+if(brPos && !isNaN(brPos[0]) && brPos[0]>15 && brPos[0]<W-15){
+  svg.append("text")
+    .attr("x", brPos[0]).attr("y", brPos[1])
+    .attr("fill", cntLbl).attr("font-size","8px")
+    .attr("font-weight",400).attr("text-anchor","middle")
+    .attr("letter-spacing","0.8px")
+    .text("BRAZIL");
+}
 
 // India label - use official boundary centroid
 var ic = pathGen.centroid(indiaOfficial);
