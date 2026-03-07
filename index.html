@@ -55,7 +55,7 @@ svg{display:block;width:100%;height:auto}
 .ldg{display:flex;align-items:center;justify-content:center;height:580px;color:var(--ftr);font-size:13px}
 .ldg::after{content:'';width:14px;height:14px;margin-left:10px;border:2px solid var(--spinner);border-top-color:#3a7ad5;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.tip{position:fixed;pointer-events:none;background:var(--tipBg);border:1px solid var(--tipBorder);border-radius:4px;padding:4px 8px;font-size:10px;color:var(--tipText);z-index:100;display:none}
+.tip{position:fixed;pointer-events:none;background:var(--tipBg);border:1px solid var(--tipBorder);border-radius:4px;padding:6px 10px;font-size:10px;color:var(--tipText);z-index:100;display:none;max-width:380px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -66,6 +66,7 @@ svg{display:block;width:100%;height:auto}
       <p>South-Up | Equal Earth Projection | Central Meridian 82.5 deg E | Borders as per Republic of India</p>
     </div>
     <button class="toggle-btn" id="themeToggle" onclick="toggleTheme()">Light Mode</button>
+    <button class="toggle-btn" id="basesToggle" onclick="toggleBases()" style="margin-left:6px">Show Foreign Bases</button>
   </div>
   <div id="map"><div class="ldg" id="ldg">Loading world data</div></div>
   <div class="ftr">
@@ -433,10 +434,10 @@ var cities = [
    STRATEGIC PORTS
    =========================================================== */
 var ports = [
-  {n:"Chabahar", ln:60.64,lt:25.30,ox:-7,oy:-6,an:"end"},
+  {n:"Chabahar", ln:60.64,lt:25.30,ox:-7,oy:-6,an:"end",h:1},
   {n:"Djibouti", ln:43.15,lt:11.59,ox:-7,oy:10, an:"end"},
   {n:"Hambantota",ln:81.12,lt:6.12, ox:-8, oy:3,an:"end"},
-  {n:"Duqm",     ln:57.70,lt:19.67,ox:-7,oy:3, an:"end"},
+  {n:"Duqm",     ln:57.70,lt:19.67,ox:-7,oy:3, an:"end",h:1},
   {n:"Gwadar",   ln:62.33,lt:25.12,ox:8, oy:8},
 ];
 
@@ -1109,6 +1110,7 @@ cities.forEach(function(c){
 ports.forEach(function(pt){
   var p = proj([pt.ln, pt.lt]);
   if(!p) return;
+  if(pt.h) return;
   svg.append("rect").attr("class","port-dot")
     .attr("x",p[0]-2).attr("y",p[1]-2)
     .attr("width",4).attr("height",4)
@@ -1233,6 +1235,197 @@ for(var i = 0; i < 3; i++){
 routeGroup = svg.append("g").attr("class","routes");
 
 /* -----------------------------------------------------------
+   FOREIGN MILITARY BASES & DUAL-USE PORTS
+   ----------------------------------------------------------- */
+var baseColors = {
+  "US":"#b0c8e0","US/UK":"#b0c8e0","CN":"#d43030","FR":"#7b68ee",
+  "UK":"#e8963a","IN":"#e86820","JP":"#e06080","TR":"#20b0c0"
+};
+var baseColorsDark = baseColors;
+var baseColorsLight = {
+  "US":"#5a7090","US/UK":"#5a7090","CN":"#b01818","FR":"#5a48cc",
+  "UK":"#c07020","IN":"#c05010","JP":"#c04060","TR":"#0890a0"
+};
+
+var foreignBases = [
+  // US - type: b=base, p=port, i=intel/surveillance
+  {n:"Yokosuka",c:"US",k:"b",t:"Naval Base (7th Fleet HQ)",ln:139.67,lt:35.28},
+  {n:"Kadena",c:"US",k:"b",t:"Air Base, Okinawa",ln:127.77,lt:26.35},
+  {n:"Sasebo",c:"US",k:"b",t:"Naval Base",ln:129.72,lt:33.16},
+  {n:"Camp Humphreys",c:"US",k:"b",t:"Army Base, S.Korea",ln:127.0,lt:36.96},
+  {n:"Changi",c:"US",k:"b",t:"Logistics hub, Singapore",ln:103.98,lt:1.32},
+  {n:"Pine Gap",c:"US",k:"i",t:"Intel facility, Australia",ln:133.74,lt:-23.80},
+  {n:"Darwin",c:"US",k:"b",t:"Marines rotational",ln:130.84,lt:-12.46},
+  {n:"Diego Garcia",c:"US/UK",k:"b",t:"Naval Support Facility",ln:72.41,lt:-7.32,ox:-8,an:"end"},
+  {n:"NSA Bahrain",c:"US",k:"b",t:"5th Fleet HQ",ln:50.60,lt:26.23,h:1},
+  {n:"Al Udeid",c:"US",k:"b",t:"Air Base, Qatar",ln:51.31,lt:25.12,h:1},
+  {n:"Al Dhafra",c:"US",k:"b",t:"Air Base, UAE",ln:54.55,lt:24.25,h:1},
+  {n:"Camp Arifjan",c:"US",k:"b",t:"Army, Kuwait",ln:48.13,lt:29.05,h:1},
+  {n:"Camp Lemonnier",c:"US",k:"b",t:"Naval Base, Djibouti",ln:43.10,lt:11.50,h:1},
+  {n:"Thumrait",c:"US",k:"b",t:"Air access, Oman",ln:54.02,lt:17.67,h:1},
+  {n:"Masirah",c:"US",k:"b",t:"Air access, Oman",ln:58.89,lt:20.68,h:1},
+  // China
+  {n:"PLA Djibouti",c:"CN",k:"b",t:"Naval Base (1st overseas)",ln:42.90,lt:11.62,h:1},
+  {n:"Gwadar",c:"CN",k:"p",t:"Dual-use port, CPEC",ln:62.33,lt:25.12},
+  {n:"Hambantota",c:"CN",k:"p",t:"99-yr port lease, Sri Lanka",ln:81.12,lt:6.12},
+  {n:"Kyaukphyu",c:"CN",k:"p",t:"Deep-sea port, Myanmar",ln:93.55,lt:19.43},
+  {n:"Ream",c:"CN",k:"b",t:"Naval base, Cambodia",ln:103.57,lt:10.52},
+  {n:"Chittagong",c:"CN",k:"p",t:"Port investment, Bangladesh",ln:91.83,lt:22.33},
+  {n:"Woody Is.",c:"CN",k:"b",t:"Military airstrip, Paracels",ln:112.34,lt:16.83},
+  {n:"Spratlys (3)",c:"CN",k:"b",t:"Fiery Cross, Subi, Mischief Reef",ln:114.0,lt:10.1},
+  {n:"Port Sudan",c:"CN",k:"p",t:"Naval facility (planned)",ln:37.22,lt:19.62},
+  {n:"Piraeus",c:"CN",k:"p",t:"COSCO port control 67%",ln:23.64,lt:37.94},
+  {n:"Yulin",c:"CN",k:"b",t:"Sub base, Hainan",ln:109.47,lt:18.23},
+  // France
+  {n:"Djibouti (FR)",c:"FR",k:"b",t:"Largest overseas base",ln:43.30,lt:11.62,h:1},
+  {n:"Reunion",c:"FR",k:"b",t:"Military base",ln:55.53,lt:-21.11},
+  // UK
+  {n:"HMS Juffair",c:"UK",k:"b",t:"Naval base, Bahrain",ln:50.45,lt:26.30,h:1},
+  {n:"Duqm (UK)",c:"UK",k:"b",t:"Joint logistics, Oman",ln:57.70,lt:19.67},
+  // India
+  {n:"Agalega",c:"IN",k:"i",t:"Airstrip + surveillance, Mauritius",ln:56.62,lt:-10.40},
+  {n:"N. Madagascar",c:"IN",k:"i",t:"Listening post",ln:49.29,lt:-12.28},
+  {n:"Assumption Is.",c:"IN",k:"i",t:"Surveillance, Seychelles",ln:47.05,lt:-9.74},
+  {n:"Duqm (IN)",c:"IN",k:"p",t:"Port access for logistics & maintenance",ln:57.55,lt:19.55,h:1},
+  // Japan
+  {n:"JMSDF Djibouti",c:"JP",k:"b",t:"Naval facility",ln:43.10,lt:11.72,h:1},
+  // Turkey
+  {n:"TURKSOM",c:"TR",k:"b",t:"Military base, Somalia",ln:45.34,lt:2.05},
+];
+
+var basesGroup = svg.append("g").attr("class","bases-layer").attr("display","none");
+var basesVisible = false;
+
+// Cluster bases by proximity
+var clusters = [];
+var used = {};
+foreignBases.forEach(function(b,i){
+  if(used[i]) return;
+  var grp = [b];
+  used[i] = true;
+  foreignBases.forEach(function(b2,j){
+    if(used[j]) return;
+    if(Math.abs(b.ln-b2.ln)<1.5 && Math.abs(b.lt-b2.lt)<1.5){
+      grp.push(b2);
+      used[j] = true;
+    }
+  });
+  // Use first entry's coords as cluster center
+  clusters.push({bases:grp, ln:grp[0].ln, lt:grp[0].lt});
+});
+
+var countryNames = {"US":"United States","US/UK":"US / UK","CN":"China","FR":"France","UK":"United Kingdom","IN":"India","JP":"Japan","TR":"Turkey"};
+var kindNames = {"b":"Military Base","p":"Dual-Use Port","i":"Intel / Surveillance"};
+
+clusters.forEach(function(cl){
+  var p = proj([cl.ln, cl.lt]);
+  if(!p || isNaN(p[0])) return;
+  var n = cl.bases.length;
+
+  if(n === 1){
+    // Single base — render with country color and type shape
+    var b = cl.bases[0];
+    var col = baseColors[b.c] || "#888";
+    var ox = b.ox || 4;
+    var anchor = b.an || "start";
+    if(b.k === "p"){
+      basesGroup.append("rect").attr("x",p[0]-2.5).attr("y",p[1]-2.5)
+        .attr("width",5).attr("height",5).attr("fill",col).attr("opacity",0.85)
+        .attr("stroke","rgba(0,0,0,0.3)").attr("stroke-width",0.5)
+        .attr("transform","rotate(45,"+p[0]+","+p[1]+")")
+        .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl)).attr("data-country",b.c);
+    } else if(b.k === "i"){
+      var tri = "M"+p[0]+","+(p[1]-3)+"L"+(p[0]+2.5)+","+(p[1]+2)+"L"+(p[0]-2.5)+","+(p[1]+2)+"Z";
+      basesGroup.append("path").attr("d",tri).attr("fill",col).attr("opacity",0.85)
+        .attr("stroke","rgba(0,0,0,0.3)").attr("stroke-width",0.5)
+        .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl)).attr("data-country",b.c);
+    } else {
+      basesGroup.append("circle").attr("cx",p[0]).attr("cy",p[1]).attr("r",2.5)
+        .attr("fill",col).attr("opacity",0.85)
+        .attr("stroke","rgba(0,0,0,0.3)").attr("stroke-width",0.5)
+        .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl)).attr("data-country",b.c);
+    }
+    if(!b.h){
+      basesGroup.append("text").attr("x",p[0]+ox).attr("y",p[1]+2)
+        .attr("fill",col).attr("font-size","4px").attr("font-weight",500).attr("opacity",0.8)
+        .attr("text-anchor",anchor).attr("class","base-lbl").attr("data-country",b.c).text(b.n);
+    }
+  } else {
+    // Multi-base cluster — render colored mini-dots in a ring
+    var r = Math.min(5, 2 + n);
+    cl.bases.forEach(function(b,i){
+      var angle = (i / n) * Math.PI * 2 - Math.PI/2;
+      var dx = Math.cos(angle) * r;
+      var dy = Math.sin(angle) * r;
+      var col = baseColors[b.c] || "#888";
+      basesGroup.append("circle")
+        .attr("cx",p[0]+dx).attr("cy",p[1]+dy).attr("r",2)
+        .attr("fill",col).attr("opacity",0.9)
+        .attr("stroke","rgba(0,0,0,0.4)").attr("stroke-width",0.4)
+        .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl))
+        .attr("data-country",b.c);
+    });
+    // Invisible hit area for hover
+    basesGroup.append("circle")
+      .attr("cx",p[0]).attr("cy",p[1]).attr("r",r+4)
+      .attr("fill","transparent").attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl));
+  }
+});
+
+// Bases legend
+var blg = basesGroup.append("g").attr("transform","translate(20,"+(H-72)+")");
+blg.append("rect").attr("x",-8).attr("y",-10).attr("width",280).attr("height",64)
+  .attr("fill","rgba(8,14,24,0.8)").attr("rx",4).attr("class","bases-legend-bg");
+blg.append("text").attr("y",2).attr("fill","#ccc").attr("font-size","6px").attr("font-weight",600).text("Foreign Military Presence & Dual-Use Ports");
+blg.append("circle").attr("cx",0).attr("cy",12).attr("r",2.5).attr("fill","#888");
+blg.append("text").attr("x",6).attr("y",14).attr("fill","#aaa").attr("font-size","4.5px").text("Military Base");
+blg.append("rect").attr("x",65).attr("y",9.5).attr("width",4).attr("height",4).attr("fill","#888").attr("transform","rotate(45,67,11.5)");
+blg.append("text").attr("x",73).attr("y",14).attr("fill","#aaa").attr("font-size","4.5px").text("Dual-Use Port");
+var triY=12; blg.append("path").attr("d","M140,"+(triY-2.5)+"L142.5,"+(triY+1.5)+"L137.5,"+(triY+1.5)+"Z").attr("fill","#888");
+blg.append("text").attr("x",146).attr("y",14).attr("fill","#aaa").attr("font-size","4.5px").text("Intel/Surveillance");
+var blItems = [
+  ["US","#b0c8e0"],["China","#d43030"],["France","#7b68ee"],
+  ["UK","#e8963a"],["India","#e86820"],["Japan","#e06080"],["Turkey","#20b0c0"]
+];
+blItems.forEach(function(it,i){
+  var x = (i % 4) * 64;
+  var y = 26 + Math.floor(i/4) * 12;
+  blg.append("circle").attr("cx",x).attr("cy",y).attr("r",2.5).attr("fill",it[1]);
+  blg.append("text").attr("x",x+5).attr("y",y+2).attr("fill","#aaa").attr("font-size","5px").text(it[0]);
+});
+
+// Rich tooltip for clusters on hover
+basesGroup.selectAll(".base-dot").on("mouseover",function(ev){
+  var ci = +d3.select(this).attr("data-cluster");
+  var cl = clusters[ci];
+  if(!cl) return;
+  var lines = cl.bases.map(function(b){
+    return (countryNames[b.c]||b.c) + " — " + (kindNames[b.k]||"Facility") + " — " + b.t;
+  });
+  // Location name from first base
+  var locName = cl.bases[0].n;
+  if(cl.bases.length > 1){
+    // Use common location name (e.g. "Djibouti" for the cluster)
+    var loc = cl.bases[0].t.split(",").pop().trim();
+    locName = loc || cl.bases[0].n;
+  }
+  tip.style("display","block")
+    .style("left",(ev.clientX+14)+"px")
+    .style("top",(ev.clientY-12)+"px")
+    .html("<b>"+locName+"</b> ("+cl.bases.length+" presence"+(cl.bases.length>1?"s":"")+")<br>"+lines.join("<br>"));
+}).on("mousemove",function(ev){
+  tip.style("left",(ev.clientX+14)+"px").style("top",(ev.clientY-12)+"px");
+}).on("mouseout",function(){
+  tip.style("display","none");
+});
+
+window.toggleBases = function(){
+  basesVisible = !basesVisible;
+  basesGroup.attr("display", basesVisible ? "block" : "none");
+  document.getElementById("basesToggle").textContent = basesVisible ? "Hide Foreign Bases" : "Show Foreign Bases";
+};
+
+/* -----------------------------------------------------------
    THEME TOGGLE FUNCTION
    ----------------------------------------------------------- */
 window.toggleTheme = function(){
@@ -1320,6 +1513,18 @@ window.toggleTheme = function(){
   document.getElementById("sw-india").style.background=T.india;
   document.getElementById("sw-land").style.background=T.land;
   lastHoverRoute = null;
+
+  // Update base marker colors for theme
+  var bc = isDark ? baseColorsDark : baseColorsLight;
+  basesGroup.selectAll(".base-dot").each(function(){
+    var el = d3.select(this);
+    el.attr("fill", bc[el.attr("data-country")] || "#888");
+  });
+  basesGroup.selectAll(".base-lbl").each(function(){
+    var el = d3.select(this);
+    el.attr("fill", bc[el.attr("data-country")] || "#888");
+  });
+  basesGroup.select(".bases-legend-bg").attr("fill", isDark ? "rgba(8,14,24,0.8)" : "rgba(255,255,255,0.9)");
 };
 
 console.log("Map v7 rendered.");
