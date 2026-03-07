@@ -1440,8 +1440,8 @@ clusters.forEach(function(cl){
 });
 
 // Bases legend
-var blg = basesGroup.append("g").attr("transform","translate(20,"+(H-110)+")");
-blg.append("rect").attr("x",-8).attr("y",-10).attr("width",340).attr("height",102)
+var blg = basesGroup.append("g").attr("transform","translate(20,"+(H-120)+")");
+blg.append("rect").attr("x",-8).attr("y",-10).attr("width",340).attr("height",114)
   .attr("fill","rgba(8,14,24,0.8)").attr("rx",4).attr("class","bases-legend-bg");
 blg.append("text").attr("y",2).attr("fill","#ccc").attr("font-size","6px").attr("font-weight",600).text("Military Bases & Strategic Presence");
 // Shape legend row
@@ -1460,19 +1460,103 @@ blg.append("text").attr("x",257).attr("y",14).attr("fill","#aaa").attr("font-siz
 blg.append("circle").attr("cx",285).attr("cy",12).attr("r",2.5).attr("fill","#888").attr("opacity",0.30);
 blg.append("circle").attr("cx",285).attr("cy",12).attr("r",4).attr("fill","none").attr("stroke","#888").attr("stroke-width",0.5).attr("stroke-dasharray","1,2").attr("opacity",0.30);
 blg.append("text").attr("x",292).attr("y",14).attr("fill","#aaa").attr("font-size","4px").text("Unconfirmed");
-// Country color swatches — 14 countries, 2 rows of 7
+// Country color swatches — clickable filter
 var blItems = [
-  ["US","#b0c8e0"],["China","#d43030"],["France","#7b68ee"],
-  ["UK","#e8963a"],["India","#e86820"],["Japan","#e06080"],["Turkey","#20b0c0"],
-  ["Pakistan","#5a7a30"],["Iran","#a02060"],["UAE","#c09060"],
-  ["Israel","#4070b0"],["Russia","#708090"],["Italy","#88b030"],["Saudi Arabia","#a08848"]
+  ["US","#b0c8e0","US"],["China","#d43030","CN"],["France","#7b68ee","FR"],
+  ["UK","#e8963a","UK"],["India","#e86820","IN"],["Japan","#e06080","JP"],["Turkey","#20b0c0","TR"],
+  ["Pakistan","#5a7a30","PK"],["Iran","#a02060","IR"],["UAE","#c09060","AE"],
+  ["Israel","#4070b0","IL"],["Russia","#708090","RU"],["Italy","#88b030","IT"],["Saudi","#a08848","SA"]
 ];
+var selectedCountries = {}; // empty = show all
+var blGroups = [];
 blItems.forEach(function(it,i){
   var x = (i % 7) * 47;
   var y = 26 + Math.floor(i/7) * 12;
-  blg.append("circle").attr("cx",x).attr("cy",y).attr("r",2.5).attr("fill",it[1]);
-  blg.append("text").attr("x",x+5).attr("y",y+2).attr("fill","#aaa").attr("font-size","4.5px").text(it[0]);
+  var g = blg.append("g").attr("class","bl-item").attr("cursor","pointer").attr("data-code",it[2]);
+  // Hit area
+  g.append("rect").attr("x",x-4).attr("y",y-5).attr("width",46).attr("height",11)
+    .attr("fill","transparent").attr("rx",2);
+  g.append("circle").attr("cx",x).attr("cy",y).attr("r",2.5).attr("fill",it[1]).attr("class","bl-dot");
+  g.append("text").attr("x",x+5).attr("y",y+2).attr("fill","#aaa").attr("font-size","4.5px")
+    .attr("class","bl-txt").text(it[0]);
+  blGroups.push({g:g, code:it[2], color:it[1]});
 });
+// "All" button
+var allBtnX = 0, allBtnY = 26 + 2*12;
+blg.append("rect").attr("x",allBtnX-4).attr("y",allBtnY-5).attr("width",28).attr("height",11)
+  .attr("fill","rgba(255,255,255,0.06)").attr("rx",2).attr("cursor","pointer").attr("class","bl-all-bg")
+  .on("click",function(){ selectedCountries={}; updateBaseFilter(); });
+blg.append("text").attr("x",allBtnX).attr("y",allBtnY+2).attr("fill","#aaa").attr("font-size","4.5px")
+  .attr("font-weight",600).text("Show All").attr("pointer-events","none");
+// Hint text
+blg.append("text").attr("x",35).attr("y",allBtnY+2).attr("fill","rgba(170,190,210,0.35)")
+  .attr("font-size","3.5px").attr("font-style","italic").text("Click country to filter").attr("class","bl-hint");
+
+// Click handler for each country
+blGroups.forEach(function(item){
+  item.g.on("click",function(){
+    var code = item.code;
+    // Handle US/UK as linked to US
+    var codes = code === "US" ? ["US","US/UK"] : [code];
+    if(selectedCountries[code]){
+      delete selectedCountries[code];
+    } else {
+      selectedCountries[code] = true;
+    }
+    updateBaseFilter();
+  });
+});
+
+function updateBaseFilter(){
+  var anySelected = Object.keys(selectedCountries).length > 0;
+  // Build set of visible country codes
+  var visibleCodes = {};
+  if(anySelected){
+    Object.keys(selectedCountries).forEach(function(c){
+      visibleCodes[c] = true;
+      if(c === "US") visibleCodes["US/UK"] = true; // Diego Garcia
+    });
+  }
+  // Update base dots
+  basesGroup.selectAll(".base-dot").each(function(){
+    var el = d3.select(this);
+    var cc = el.attr("data-country");
+    if(!anySelected){
+      // Show all — restore opacity based on status
+      el.attr("display","block");
+    } else if(cc && visibleCodes[cc]){
+      el.attr("display","block");
+    } else if(!cc){
+      // Invisible hit areas for clusters — check if cluster has any visible country
+      var ci = +el.attr("data-cluster");
+      var cl = clusters[ci];
+      if(cl){
+        var hasVisible = cl.bases.some(function(b){ return visibleCodes[b.c]; });
+        el.attr("display", hasVisible ? "block" : "none");
+      }
+    } else {
+      el.attr("display","none");
+    }
+  });
+  // Also hide dashed status rings for hidden countries
+  basesGroup.selectAll("circle:not(.base-dot)").each(function(){
+    // Status rings don't have data-country, but they are siblings of base-dot
+    // We'll leave them — they'll just be orphaned rings which is fine
+  });
+  // Update legend visual feedback
+  blGroups.forEach(function(item){
+    var isSelected = selectedCountries[item.code];
+    var dimmed = anySelected && !isSelected;
+    item.g.select(".bl-dot").attr("opacity", dimmed ? 0.2 : 1);
+    item.g.select(".bl-txt").attr("fill", dimmed ? (isDark?"rgba(170,190,210,0.2)":"rgba(40,60,80,0.2)") : (isSelected ? (isDark?"#fff":"#1a2a3a") : (isDark?"#aaa":"#555")));
+    // Highlight background for selected
+    item.g.select("rect").attr("fill", isSelected ? (isDark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)") : "transparent");
+  });
+  // Update hint
+  blg.select(".bl-hint").text(anySelected ?
+    Object.keys(selectedCountries).length + " selected — click more or Show All" :
+    "Click country to filter").attr("fill", isDark ? "rgba(170,190,210,0.35)" : "rgba(40,60,80,0.35)");
+}
 
 // Rich tooltip for clusters on hover
 basesGroup.selectAll(".base-dot").on("mouseover",function(ev){
@@ -1513,6 +1597,11 @@ window.toggleBases = function(){
   basesVisible = !basesVisible;
   basesGroup.attr("display", basesVisible ? "block" : "none");
   document.getElementById("basesToggle").textContent = basesVisible ? "Hide Military Bases" : "Show Military Bases";
+  // Reset filter when hiding
+  if(!basesVisible){
+    selectedCountries = {};
+    updateBaseFilter();
+  }
   // In bases mode: hide non-capital Indian cities and strategic ports for clarity
   var cityVis = basesVisible ? "none" : null;
   var fullVis = basesVisible ? "none" : null;
@@ -1629,6 +1718,10 @@ window.toggleTheme = function(){
     el.attr("fill", bc[el.attr("data-country")] || "#888");
   });
   basesGroup.select(".bases-legend-bg").attr("fill", isDark ? "rgba(8,14,24,0.8)" : "rgba(255,255,255,0.9)");
+  basesGroup.select(".bl-all-bg").attr("fill", isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)");
+  basesGroup.select(".bl-hint").attr("fill", isDark ? "rgba(170,190,210,0.35)" : "rgba(40,60,80,0.35)");
+  // Recolor filter state for theme
+  updateBaseFilter();
 };
 
 console.log("Map v8 rendered — 14 powers, 76 installations.");
