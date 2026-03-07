@@ -66,7 +66,7 @@ svg{display:block;width:100%;height:auto}
       <p>South-Up | Equal Earth Projection | Central Meridian 82.5 deg E | Borders as per Republic of India</p>
     </div>
     <button class="toggle-btn" id="themeToggle" onclick="toggleTheme()">Light Mode</button>
-    <button class="toggle-btn" id="basesToggle" onclick="toggleBases()" style="margin-left:6px">Show Foreign Bases</button>
+    <button class="toggle-btn" id="basesToggle" onclick="toggleBases()" style="margin-left:6px">Show Military Bases</button>
   </div>
   <div id="map"><div class="ldg" id="ldg">Loading world data</div></div>
   <div class="ftr">
@@ -75,8 +75,8 @@ svg{display:block;width:100%;height:auto}
       <div class="li"><div class="sw" id="sw-land" style="background:#1e3045"></div>Countries</div>
       <div class="li"><div class="dl" style="border-color:rgba(200,148,60,0.5)"></div>Sea lanes</div>
       <div class="li"><div class="dt" style="background:#cc4444"></div>Chokepoints</div>
-      <div class="li"><div class="dt" style="background:#4488dd"></div>Indian cities</div>
-      <div class="li"><div class="dt" style="background:#7070b0"></div>Strategic ports</div>
+      <div class="li" id="lg-cities"><div class="dt" style="background:#4488dd"></div>Indian cities</div>
+      <div class="li" id="lg-ports"><div class="dt" style="background:#7070b0"></div>Strategic ports</div>
     </div>
     <div class="nt">
       Equal Earth projection preserves true relative area. South-up orientation places the Indian Ocean at top.
@@ -1095,7 +1095,7 @@ cities.forEach(function(c){
   svg.append("circle").attr("class","city-dot").attr("data-cap",c.cap?"1":"0").attr("cx",p[0]).attr("cy",p[1]).attr("r",r)
     .attr("fill",col).attr("stroke",col+"30")
     .attr("stroke-width", c.cap ? 2.5 : 1.5);
-  svg.append("text").attr("class","city-lbl")
+  svg.append("text").attr("class","city-lbl").attr("data-cap",c.cap?"1":"0")
     .attr("x",p[0]+c.ox).attr("y",p[1]+c.oy)
     .attr("fill",cityLbl)
     .attr("font-size", c.cap ? "9px" : "7.5px")
@@ -1235,68 +1235,120 @@ for(var i = 0; i < 3; i++){
 routeGroup = svg.append("g").attr("class","routes");
 
 /* -----------------------------------------------------------
-   FOREIGN MILITARY BASES & DUAL-USE PORTS
+   MILITARY BASES & DUAL-USE PORTS
    ----------------------------------------------------------- */
 var baseColors = {
   "US":"#b0c8e0","US/UK":"#b0c8e0","CN":"#d43030","FR":"#7b68ee",
-  "UK":"#e8963a","IN":"#e86820","JP":"#e06080","TR":"#20b0c0"
+  "UK":"#e8963a","IN":"#e86820","JP":"#e06080","TR":"#20b0c0",
+  "PK":"#5a7a30","IR":"#a02060","AE":"#c09060","IL":"#4070b0",
+  "RU":"#708090","IT":"#88b030","SA":"#a08848"
 };
 var baseColorsDark = baseColors;
 var baseColorsLight = {
   "US":"#5a7090","US/UK":"#5a7090","CN":"#b01818","FR":"#5a48cc",
-  "UK":"#c07020","IN":"#c05010","JP":"#c04060","TR":"#0890a0"
+  "UK":"#c07020","IN":"#c05010","JP":"#c04060","TR":"#0890a0",
+  "PK":"#3e5820","IR":"#801848","AE":"#906840","IL":"#3860a0",
+  "RU":"#506070","IT":"#689020","SA":"#807030"
 };
 
 var foreignBases = [
-  // US - type: b=base, p=port, i=intel/surveillance
-  {n:"Yokosuka",c:"US",k:"b",t:"Naval Base (7th Fleet HQ)",ln:139.67,lt:35.28},
-  {n:"Kadena",c:"US",k:"b",t:"Air Base, Okinawa",ln:127.77,lt:26.35},
-  {n:"Sasebo",c:"US",k:"b",t:"Naval Base",ln:129.72,lt:33.16},
-  {n:"Camp Humphreys",c:"US",k:"b",t:"Army Base, S.Korea",ln:127.0,lt:36.96},
-  {n:"Changi",c:"US",k:"b",t:"Logistics hub, Singapore",ln:103.98,lt:1.32},
-  {n:"Pine Gap",c:"US",k:"i",t:"Intel facility, Australia",ln:133.74,lt:-23.80},
-  {n:"Darwin",c:"US",k:"b",t:"Marines rotational",ln:130.84,lt:-12.46},
-  {n:"Diego Garcia",c:"US/UK",k:"b",t:"Naval Support Facility",ln:72.41,lt:-7.32,ox:-8,an:"end"},
-  {n:"NSA Bahrain",c:"US",k:"b",t:"5th Fleet HQ",ln:50.60,lt:26.23,h:1},
-  {n:"Al Udeid",c:"US",k:"b",t:"Air Base, Qatar",ln:51.31,lt:25.12,h:1},
-  {n:"Al Dhafra",c:"US",k:"b",t:"Air Base, UAE",ln:54.55,lt:24.25,h:1},
-  {n:"Camp Arifjan",c:"US",k:"b",t:"Army, Kuwait",ln:48.13,lt:29.05,h:1},
-  {n:"Camp Lemonnier",c:"US",k:"b",t:"Naval Base, Djibouti",ln:43.10,lt:11.50,h:1},
-  {n:"Thumrait",c:"US",k:"b",t:"Air access, Oman",ln:54.02,lt:17.67,h:1},
-  {n:"Masirah",c:"US",k:"b",t:"Air access, Oman",ln:58.89,lt:20.68,h:1},
+  // US — hc = host country for tooltip header
+  {n:"Yokosuka",c:"US",k:"b",s:"op",hc:"Japan",t:"Naval Base (7th Fleet HQ)",ln:139.67,lt:35.28},
+  {n:"Kadena",c:"US",k:"b",s:"op",hc:"Japan",t:"Air Base, Okinawa",ln:127.77,lt:26.35},
+  {n:"Sasebo",c:"US",k:"b",s:"op",hc:"Japan",t:"Naval Base",ln:129.72,lt:33.16},
+  {n:"Camp Humphreys",c:"US",k:"b",s:"op",hc:"South Korea",t:"Army Base",ln:127.0,lt:36.96},
+  {n:"Changi",c:"US",k:"b",s:"op",hc:"Singapore",t:"Logistics hub",ln:103.98,lt:1.32},
+  {n:"Pine Gap",c:"US",k:"i",s:"op",hc:"Australia",t:"Intel facility",ln:133.74,lt:-23.80},
+  {n:"Waihopai",c:"US",k:"i",s:"op",hc:"New Zealand",t:"Five Eyes SIGINT station, NSA-funded, covers South Pacific",ln:173.77,lt:-41.60},
+  {n:"Darwin",c:"US",k:"b",s:"op",hc:"Australia",t:"Marines rotational",ln:130.84,lt:-12.46},
+  {n:"Guam",c:"US",k:"b",s:"op",hc:"US (Guam)",t:"Naval Base + Andersen AFB + Camp Blaz, Second Island Chain anchor",ln:144.79,lt:13.45},
+  {n:"HMAS Stirling",c:"US",k:"b",s:"ag",hc:"Australia",t:"AUKUS SRF-West, $5.2B upgrade, up to 4 US + 1 UK nuclear subs from 2027",ln:115.68,lt:-32.20},
+  {n:"Philippines (EDCA)",c:"US",k:"b",s:"op",hc:"Philippines",t:"9 EDCA sites, rotational access, First Island Chain",ln:120.49,lt:15.49},
+  {n:"Diego Garcia",c:"US/UK",k:"b",s:"op",hc:"BIOT",t:"Naval Support Facility",ln:72.41,lt:-7.32,ox:-8,an:"end"},
+  {n:"NSA Bahrain",c:"US",k:"b",s:"op",hc:"Bahrain",t:"5th Fleet HQ",ln:50.60,lt:26.23,h:1},
+  {n:"Al Udeid",c:"US",k:"b",s:"op",hc:"Qatar",t:"Air Base",ln:51.31,lt:25.12,h:1},
+  {n:"Al Dhafra",c:"US",k:"b",s:"op",hc:"UAE",t:"Air Base",ln:54.55,lt:24.25,h:1},
+  {n:"Camp Arifjan",c:"US",k:"b",s:"op",hc:"Kuwait",t:"Army Base",ln:48.13,lt:29.05,h:1},
+  {n:"Camp Lemonnier",c:"US",k:"b",s:"op",hc:"Djibouti",t:"Naval Base",ln:43.10,lt:11.50,h:1},
+  {n:"Thumrait",c:"US",k:"b",s:"op",hc:"Oman",t:"Air access",ln:54.02,lt:17.67,h:1},
+  {n:"Masirah",c:"US",k:"b",s:"op",hc:"Oman",t:"Air access, Masirah Island",ln:58.89,lt:20.68},
   // China
-  {n:"PLA Djibouti",c:"CN",k:"b",t:"Naval Base (1st overseas)",ln:42.90,lt:11.62,h:1},
-  {n:"Gwadar",c:"CN",k:"p",t:"Dual-use port, CPEC",ln:62.33,lt:25.12},
-  {n:"Hambantota",c:"CN",k:"p",t:"99-yr port lease, Sri Lanka",ln:81.12,lt:6.12},
-  {n:"Kyaukphyu",c:"CN",k:"p",t:"Deep-sea port, Myanmar",ln:93.55,lt:19.43},
-  {n:"Ream",c:"CN",k:"b",t:"Naval base, Cambodia",ln:103.57,lt:10.52},
-  {n:"Chittagong",c:"CN",k:"p",t:"Port investment, Bangladesh",ln:91.83,lt:22.33},
-  {n:"Woody Is.",c:"CN",k:"b",t:"Military airstrip, Paracels",ln:112.34,lt:16.83},
-  {n:"Spratlys (3)",c:"CN",k:"b",t:"Fiery Cross, Subi, Mischief Reef",ln:114.0,lt:10.1},
-  {n:"Port Sudan",c:"CN",k:"p",t:"Naval facility (planned)",ln:37.22,lt:19.62},
-  {n:"Piraeus",c:"CN",k:"p",t:"COSCO port control 67%",ln:23.64,lt:37.94},
-  {n:"Yulin",c:"CN",k:"b",t:"Sub base, Hainan",ln:109.47,lt:18.23},
+  {n:"PLA Djibouti",c:"CN",k:"b",s:"op",hc:"Djibouti",t:"Naval Base (1st overseas)",ln:42.90,lt:11.62,h:1},
+  {n:"Gwadar",c:"CN",k:"p",s:"op",hc:"Pakistan",t:"Dual-use port, CPEC",ln:62.33,lt:25.12},
+  {n:"Hambantota",c:"CN",k:"p",s:"op",hc:"Sri Lanka",t:"99-yr port lease",ln:81.12,lt:6.12},
+  {n:"Kyaukphyu",c:"CN",k:"p",s:"op",hc:"Myanmar",t:"Deep-sea port",ln:93.55,lt:19.43},
+  {n:"Ream",c:"CN",k:"b",s:"op",hc:"Cambodia",t:"Naval base (opened Apr 2025)",ln:103.57,lt:10.52},
+  {n:"Chittagong",c:"CN",k:"p",s:"op",hc:"Bangladesh",t:"Port investment",ln:91.83,lt:22.33},
+  {n:"Woody Is.",c:"CN",k:"b",s:"op",hc:"Paracels (disputed)",t:"Military airstrip",ln:112.34,lt:16.83},
+  {n:"Spratlys (3)",c:"CN",k:"b",s:"op",hc:"Spratlys (disputed)",t:"Fiery Cross, Subi, Mischief Reef",ln:114.0,lt:10.1},
+  {n:"Port Sudan",c:"CN",k:"p",s:"op",hc:"Sudan",t:"Naval facility (planned)",ln:37.22,lt:19.62},
+  {n:"Piraeus",c:"CN",k:"p",s:"op",hc:"Greece",t:"COSCO port control 67%",ln:23.64,lt:37.94},
+  {n:"Yulin",c:"CN",k:"b",s:"op",hc:"China (Hainan)",t:"Submarine base",ln:109.47,lt:18.23},
+  {n:"Zhanjiang",c:"CN",k:"b",s:"op",hc:"China",t:"South Sea Fleet HQ — all Indian Ocean deployments originate here",ln:110.40,lt:21.20},
+  {n:"Ningbo",c:"CN",k:"b",s:"op",hc:"China",t:"East Sea Fleet HQ — faces Taiwan Strait",ln:121.55,lt:29.87},
+  {n:"Qingdao",c:"CN",k:"b",s:"op",hc:"China",t:"North Sea Fleet HQ — carriers & nuclear subs home port",ln:120.38,lt:36.07},
   // France
-  {n:"Djibouti (FR)",c:"FR",k:"b",t:"Largest overseas base",ln:43.30,lt:11.62,h:1},
-  {n:"Reunion",c:"FR",k:"b",t:"Military base",ln:55.53,lt:-21.11},
+  {n:"Djibouti (FR)",c:"FR",k:"b",s:"op",hc:"Djibouti",t:"Largest overseas base",ln:43.30,lt:11.62,h:1},
+  {n:"Reunion",c:"FR",k:"b",s:"op",hc:"France (Reunion)",t:"Military base",ln:55.53,lt:-21.11},
+  {n:"Abu Dhabi (FR)",c:"FR",k:"b",s:"op",hc:"UAE",t:"Camp de la Paix — ~900 troops, Rafale jets, naval berths at Hormuz",ln:54.55,lt:24.45,h:1},
+  {n:"Mayotte",c:"FR",k:"b",s:"op",hc:"France (Mayotte)",t:"Garrison, Mozambique Channel, French Indian Ocean territory",ln:45.15,lt:-12.78},
   // UK
-  {n:"HMS Juffair",c:"UK",k:"b",t:"Naval base, Bahrain",ln:50.45,lt:26.30,h:1},
-  {n:"Duqm (UK)",c:"UK",k:"b",t:"Joint logistics, Oman",ln:57.70,lt:19.67},
-  // India
-  {n:"Agalega",c:"IN",k:"i",t:"Airstrip + surveillance, Mauritius",ln:56.62,lt:-10.40},
-  {n:"N. Madagascar",c:"IN",k:"i",t:"Listening post",ln:49.29,lt:-12.28},
-  {n:"Assumption Is.",c:"IN",k:"i",t:"Surveillance, Seychelles",ln:47.05,lt:-9.74},
-  {n:"Duqm (IN)",c:"IN",k:"p",t:"Port access for logistics & maintenance",ln:57.55,lt:19.55,h:1},
+  {n:"HMS Juffair",c:"UK",k:"b",s:"op",hc:"Bahrain",t:"Naval base",ln:50.45,lt:26.30,h:1},
+  {n:"Duqm (UK)",c:"UK",k:"b",s:"op",hc:"Oman",t:"Joint logistics hub",ln:57.70,lt:19.67},
+  // India — overseas
+  {n:"Agalega",c:"IN",k:"i",s:"op",hc:"Mauritius",t:"Airstrip + surveillance",ln:56.62,lt:-10.40},
+  {n:"N. Madagascar",c:"IN",k:"i",s:"op",hc:"Madagascar",t:"Listening post",ln:49.29,lt:-12.28},
+  {n:"Assumption Is.",c:"IN",k:"i",s:"op",hc:"Seychelles",t:"Surveillance radars",ln:47.05,lt:-9.74},
+  {n:"Duqm (IN)",c:"IN",k:"p",s:"op",hc:"Oman",t:"Port access for logistics & maintenance",ln:57.55,lt:19.55,h:1},
+  // India — domestic naval bases
+  {n:"Mumbai (Western Naval Cmd)",c:"IN",k:"b",s:"op",hc:"India",t:"Western Naval Command HQ, fleet command",ln:72.85,lt:18.92,h:1},
+  {n:"Visakhapatnam (Eastern Naval Cmd)",c:"IN",k:"b",s:"op",hc:"India",t:"Eastern Naval Command HQ, nuclear submarine home port",ln:83.30,lt:17.69,h:1},
+  {n:"Kochi (Southern Naval Cmd)",c:"IN",k:"b",s:"op",hc:"India",t:"Southern Naval Command HQ, INS Vikrant home port",ln:76.27,lt:9.97,h:1},
+  {n:"Port Blair (A&N Cmd)",c:"IN",k:"b",s:"op",hc:"India",t:"Andaman & Nicobar Command — tri-service, guards Malacca approach",ln:92.74,lt:11.67,h:1},
+  {n:"INS Kadamba, Karwar",c:"IN",k:"b",s:"op",hc:"India",t:"India's largest naval base, Project Seabird, submarine pens",ln:74.13,lt:14.80},
+  {n:"INS Rajali, Arakkonam",c:"IN",k:"b",s:"op",hc:"India",t:"Naval air station, P-8I Poseidon maritime patrol base",ln:79.66,lt:13.07},
   // Japan
-  {n:"JMSDF Djibouti",c:"JP",k:"b",t:"Naval facility",ln:43.10,lt:11.72,h:1},
+  {n:"JMSDF Djibouti",c:"JP",k:"b",s:"op",hc:"Djibouti",t:"Naval facility",ln:43.10,lt:11.72,h:1},
   // Turkey
-  {n:"TURKSOM",c:"TR",k:"b",t:"Military base, Somalia",ln:45.34,lt:2.05},
+  {n:"TURKSOM",c:"TR",k:"b",s:"op",hc:"Somalia",t:"Military base, largest Turkish overseas",ln:45.34,lt:2.05},
+  {n:"Gölcük Naval Base",c:"TR",k:"b",s:"op",hc:"Turkey",t:"Naval Forces Command HQ — fleet headquarters",ln:29.82,lt:40.72},
+  {n:"Aksaz Naval Base",c:"TR",k:"b",s:"op",hc:"Turkey",t:"Mediterranean Fleet — largest operational base, Indian Ocean deployments transit Suez",ln:28.38,lt:36.98},
+  {n:"Mersin Naval Base",c:"TR",k:"b",s:"op",hc:"Turkey",t:"Eastern Mediterranean — closest Turkish base to Suez Canal",ln:34.63,lt:36.80},
+  // Pakistan
+  {n:"Karachi",c:"PK",k:"b",s:"op",hc:"Pakistan",t:"Naval HQ (PNS Qasim), main fleet base",ln:66.98,lt:24.79},
+  {n:"Ormara",c:"PK",k:"b",s:"op",hc:"Pakistan",t:"Jinnah Naval Base — submarine base, 8 ships + 4 subs",ln:64.64,lt:25.21},
+  {n:"Turbat",c:"PK",k:"b",s:"op",hc:"Pakistan",t:"PNS Siddique — naval air station, P-3C Orion",ln:63.05,lt:26.00},
+  {n:"Gwadar (PN)",c:"PK",k:"b",s:"op",hc:"Pakistan",t:"Navy station at CPEC port",ln:62.33,lt:25.15,h:1},
+  // Iran
+  {n:"Bandar Abbas",c:"IR",k:"b",s:"op",hc:"Iran",t:"Naval HQ, main fleet, controls north Hormuz",ln:56.27,lt:27.19},
+  {n:"Jask",c:"IR",k:"b",s:"op",hc:"Iran",t:"New naval base, Indian Ocean projection east of Hormuz",ln:57.77,lt:25.64},
+  {n:"Abu Musa Is.",c:"IR",k:"b",s:"op",hc:"Iran (disputed)",t:"IRGC fortified island, missiles, disputed with UAE",ln:55.03,lt:25.87},
+  {n:"Chabahar (IRGC)",c:"IR",k:"b",s:"op",hc:"Iran",t:"Imam Ali base, patrols Gulf of Oman",ln:60.64,lt:25.30},
+  // UAE
+  {n:"Berbera",c:"AE",k:"b",s:"op",hc:"Somaliland",t:"Naval + air base, expanded 2025",ln:45.02,lt:10.44},
+  {n:"Assab",c:"AE",k:"b",s:"ag",hc:"Eritrea",t:"30-yr lease, scaled down 2021, lease retained",ln:42.74,lt:13.01},
+  {n:"Mayun Is.",c:"AE",k:"b",s:"op",hc:"Yemen",t:"Perim Island — controls Bab-el-Mandeb strait",ln:43.42,lt:12.65},
+  {n:"Socotra",c:"AE",k:"i",s:"op",hc:"Yemen (STC)",t:"Abd al-Kuri — drone hangars, runway resurfaced 2025",ln:52.23,lt:12.18},
+  {n:"Bosaso",c:"AE",k:"b",s:"op",hc:"Puntland",t:"Air transport hub",ln:49.18,lt:11.28},
+  {n:"Abu Dhabi Naval Base",c:"AE",k:"b",s:"op",hc:"UAE",t:"UAE Navy HQ, Mina Zayed + Fujairah — home fleet in the Gulf",ln:54.37,lt:24.47,h:1},
+  // Israel
+  {n:"Dahlak Is.",c:"IL",k:"i",s:"uc",hc:"Eritrea",t:"Signals intel (Stratfor reports, denied by Eritrea)",ln:40.15,lt:15.75},
+  {n:"Amba Soira",c:"IL",k:"i",s:"uc",hc:"Eritrea",t:"Listening post at 3,013m peak, monitors Red Sea",ln:39.23,lt:14.90},
+  {n:"Somaliland",c:"IL",k:"b",s:"ag",hc:"Somaliland",t:"Base under negotiation, linked to Dec 2025 recognition",ln:45.05,lt:10.47},
+  // Russia
+  {n:"Port Sudan (RU)",c:"RU",k:"p",s:"ag",hc:"Sudan",t:"Naval logistics, 25-yr deal, frozen Dec 2025",ln:37.22,lt:19.65,h:1},
+  {n:"Massawa",c:"RU",k:"p",s:"ag",hc:"Eritrea",t:"Logistics centre, MoU signed, port call 2024",ln:39.47,lt:15.61},
+  // Italy
+  {n:"Djibouti (IT)",c:"IT",k:"b",s:"op",hc:"Djibouti",t:"Base Amedeo Guillet, 300 personnel, since 2013",ln:43.20,lt:11.55,h:1},
+  // Saudi Arabia
+  {n:"Djibouti (SA)",c:"SA",k:"b",s:"ag",hc:"Djibouti",t:"Military base, deal signed 2017",ln:43.15,lt:11.48,h:1},
+  {n:"King Faisal Naval Base",c:"SA",k:"b",s:"op",hc:"Saudi Arabia",t:"Western Fleet HQ, Jeddah — Red Sea patrol, India's Suez route",ln:39.17,lt:21.54},
 ];
 
 var basesGroup = svg.append("g").attr("class","bases-layer").attr("display","none");
 var basesVisible = false;
 
-// Cluster bases by proximity
+// Cluster bases by proximity (0.6° threshold — avoids false clusters in dense regions)
 var clusters = [];
 var used = {};
 foreignBases.forEach(function(b,i){
@@ -1305,17 +1357,20 @@ foreignBases.forEach(function(b,i){
   used[i] = true;
   foreignBases.forEach(function(b2,j){
     if(used[j]) return;
-    if(Math.abs(b.ln-b2.ln)<1.5 && Math.abs(b.lt-b2.lt)<1.5){
+    if(Math.abs(b.ln-b2.ln)<0.6 && Math.abs(b.lt-b2.lt)<0.6){
       grp.push(b2);
       used[j] = true;
     }
   });
-  // Use first entry's coords as cluster center
-  clusters.push({bases:grp, ln:grp[0].ln, lt:grp[0].lt});
+  // Compute average center for cluster
+  var avgLn = grp.reduce(function(s,x){return s+x.ln;},0)/grp.length;
+  var avgLt = grp.reduce(function(s,x){return s+x.lt;},0)/grp.length;
+  clusters.push({bases:grp, ln:avgLn, lt:avgLt});
 });
 
-var countryNames = {"US":"United States","US/UK":"US / UK","CN":"China","FR":"France","UK":"United Kingdom","IN":"India","JP":"Japan","TR":"Turkey"};
+var countryNames = {"US":"United States","US/UK":"US / UK","CN":"China","FR":"France","UK":"United Kingdom","IN":"India","JP":"Japan","TR":"Turkey","PK":"Pakistan","IR":"Iran","AE":"UAE","IL":"Israel","RU":"Russia","IT":"Italy","SA":"Saudi Arabia"};
 var kindNames = {"b":"Military Base","p":"Dual-Use Port","i":"Intel / Surveillance"};
+var statusNames = {"op":"Operational","ag":"Agreed / Negotiating","uc":"Unconfirmed"};
 
 clusters.forEach(function(cl){
   var p = proj([cl.ln, cl.lt]);
@@ -1328,42 +1383,54 @@ clusters.forEach(function(cl){
     var col = baseColors[b.c] || "#888";
     var ox = b.ox || 4;
     var anchor = b.an || "start";
+    var opac = b.s==="ag" ? 0.55 : b.s==="uc" ? 0.30 : 0.85;
+    var lblOpac = b.s==="ag" ? 0.55 : b.s==="uc" ? 0.25 : 0.8;
     if(b.k === "p"){
       basesGroup.append("rect").attr("x",p[0]-2.5).attr("y",p[1]-2.5)
-        .attr("width",5).attr("height",5).attr("fill",col).attr("opacity",0.85)
+        .attr("width",5).attr("height",5).attr("fill",col).attr("opacity",opac)
         .attr("stroke","rgba(0,0,0,0.3)").attr("stroke-width",0.5)
         .attr("transform","rotate(45,"+p[0]+","+p[1]+")")
         .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl)).attr("data-country",b.c);
     } else if(b.k === "i"){
       var tri = "M"+p[0]+","+(p[1]-3)+"L"+(p[0]+2.5)+","+(p[1]+2)+"L"+(p[0]-2.5)+","+(p[1]+2)+"Z";
-      basesGroup.append("path").attr("d",tri).attr("fill",col).attr("opacity",0.85)
+      basesGroup.append("path").attr("d",tri).attr("fill",col).attr("opacity",opac)
         .attr("stroke","rgba(0,0,0,0.3)").attr("stroke-width",0.5)
         .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl)).attr("data-country",b.c);
     } else {
       basesGroup.append("circle").attr("cx",p[0]).attr("cy",p[1]).attr("r",2.5)
-        .attr("fill",col).attr("opacity",0.85)
+        .attr("fill",col).attr("opacity",opac)
         .attr("stroke","rgba(0,0,0,0.3)").attr("stroke-width",0.5)
         .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl)).attr("data-country",b.c);
     }
-    if(!b.h){
-      basesGroup.append("text").attr("x",p[0]+ox).attr("y",p[1]+2)
-        .attr("fill",col).attr("font-size","4px").attr("font-weight",500).attr("opacity",0.8)
-        .attr("text-anchor",anchor).attr("class","base-lbl").attr("data-country",b.c).text(b.n);
+    // Add dashed ring for non-operational
+    if(b.s==="ag"||b.s==="uc"){
+      basesGroup.append("circle").attr("cx",p[0]).attr("cy",p[1]).attr("r",4.5)
+        .attr("fill","none").attr("stroke",col).attr("opacity",opac)
+        .attr("stroke-width",0.6).attr("stroke-dasharray",b.s==="ag"?"2,2":"1,2");
     }
+    // No labels on base markers — all info via hover tooltip only
   } else {
     // Multi-base cluster — render colored mini-dots in a ring
-    var r = Math.min(5, 2 + n);
+    var r = Math.min(8, 2.5 + n * 0.9);
     cl.bases.forEach(function(b,i){
       var angle = (i / n) * Math.PI * 2 - Math.PI/2;
       var dx = Math.cos(angle) * r;
       var dy = Math.sin(angle) * r;
       var col = baseColors[b.c] || "#888";
+      var opac = b.s==="ag" ? 0.55 : b.s==="uc" ? 0.30 : 0.9;
       basesGroup.append("circle")
         .attr("cx",p[0]+dx).attr("cy",p[1]+dy).attr("r",2)
-        .attr("fill",col).attr("opacity",0.9)
+        .attr("fill",col).attr("opacity",opac)
         .attr("stroke","rgba(0,0,0,0.4)").attr("stroke-width",0.4)
         .attr("class","base-dot").attr("data-cluster",clusters.indexOf(cl))
         .attr("data-country",b.c);
+      // Dashed ring for non-operational in clusters
+      if(b.s==="ag"||b.s==="uc"){
+        basesGroup.append("circle")
+          .attr("cx",p[0]+dx).attr("cy",p[1]+dy).attr("r",3.5)
+          .attr("fill","none").attr("stroke",col).attr("opacity",opac*0.8)
+          .attr("stroke-width",0.4).attr("stroke-dasharray",b.s==="ag"?"1.5,1.5":"1,1.5");
+      }
     });
     // Invisible hit area for hover
     basesGroup.append("circle")
@@ -1373,25 +1440,38 @@ clusters.forEach(function(cl){
 });
 
 // Bases legend
-var blg = basesGroup.append("g").attr("transform","translate(20,"+(H-72)+")");
-blg.append("rect").attr("x",-8).attr("y",-10).attr("width",280).attr("height",64)
+var blg = basesGroup.append("g").attr("transform","translate(20,"+(H-110)+")");
+blg.append("rect").attr("x",-8).attr("y",-10).attr("width",340).attr("height",102)
   .attr("fill","rgba(8,14,24,0.8)").attr("rx",4).attr("class","bases-legend-bg");
-blg.append("text").attr("y",2).attr("fill","#ccc").attr("font-size","6px").attr("font-weight",600).text("Foreign Military Presence & Dual-Use Ports");
+blg.append("text").attr("y",2).attr("fill","#ccc").attr("font-size","6px").attr("font-weight",600).text("Military Bases & Strategic Presence");
+// Shape legend row
 blg.append("circle").attr("cx",0).attr("cy",12).attr("r",2.5).attr("fill","#888");
 blg.append("text").attr("x",6).attr("y",14).attr("fill","#aaa").attr("font-size","4.5px").text("Military Base");
 blg.append("rect").attr("x",65).attr("y",9.5).attr("width",4).attr("height",4).attr("fill","#888").attr("transform","rotate(45,67,11.5)");
 blg.append("text").attr("x",73).attr("y",14).attr("fill","#aaa").attr("font-size","4.5px").text("Dual-Use Port");
 var triY=12; blg.append("path").attr("d","M140,"+(triY-2.5)+"L142.5,"+(triY+1.5)+"L137.5,"+(triY+1.5)+"Z").attr("fill","#888");
 blg.append("text").attr("x",146).attr("y",14).attr("fill","#aaa").attr("font-size","4.5px").text("Intel/Surveillance");
+// Status legend row
+blg.append("circle").attr("cx",210).attr("cy",12).attr("r",2.5).attr("fill","#888").attr("opacity",0.85);
+blg.append("text").attr("x",216).attr("y",14).attr("fill","#aaa").attr("font-size","4px").text("Operational");
+blg.append("circle").attr("cx",250).attr("cy",12).attr("r",2.5).attr("fill","#888").attr("opacity",0.55);
+blg.append("circle").attr("cx",250).attr("cy",12).attr("r",4).attr("fill","none").attr("stroke","#888").attr("stroke-width",0.5).attr("stroke-dasharray","2,2").attr("opacity",0.55);
+blg.append("text").attr("x",257).attr("y",14).attr("fill","#aaa").attr("font-size","4px").text("Agreed");
+blg.append("circle").attr("cx",285).attr("cy",12).attr("r",2.5).attr("fill","#888").attr("opacity",0.30);
+blg.append("circle").attr("cx",285).attr("cy",12).attr("r",4).attr("fill","none").attr("stroke","#888").attr("stroke-width",0.5).attr("stroke-dasharray","1,2").attr("opacity",0.30);
+blg.append("text").attr("x",292).attr("y",14).attr("fill","#aaa").attr("font-size","4px").text("Unconfirmed");
+// Country color swatches — 14 countries, 2 rows of 7
 var blItems = [
   ["US","#b0c8e0"],["China","#d43030"],["France","#7b68ee"],
-  ["UK","#e8963a"],["India","#e86820"],["Japan","#e06080"],["Turkey","#20b0c0"]
+  ["UK","#e8963a"],["India","#e86820"],["Japan","#e06080"],["Turkey","#20b0c0"],
+  ["Pakistan","#5a7a30"],["Iran","#a02060"],["UAE","#c09060"],
+  ["Israel","#4070b0"],["Russia","#708090"],["Italy","#88b030"],["Saudi Arabia","#a08848"]
 ];
 blItems.forEach(function(it,i){
-  var x = (i % 4) * 64;
-  var y = 26 + Math.floor(i/4) * 12;
+  var x = (i % 7) * 47;
+  var y = 26 + Math.floor(i/7) * 12;
   blg.append("circle").attr("cx",x).attr("cy",y).attr("r",2.5).attr("fill",it[1]);
-  blg.append("text").attr("x",x+5).attr("y",y+2).attr("fill","#aaa").attr("font-size","5px").text(it[0]);
+  blg.append("text").attr("x",x+5).attr("y",y+2).attr("fill","#aaa").attr("font-size","4.5px").text(it[0]);
 });
 
 // Rich tooltip for clusters on hover
@@ -1399,20 +1479,30 @@ basesGroup.selectAll(".base-dot").on("mouseover",function(ev){
   var ci = +d3.select(this).attr("data-cluster");
   var cl = clusters[ci];
   if(!cl) return;
+  // Build structured tooltip
   var lines = cl.bases.map(function(b){
-    return (countryNames[b.c]||b.c) + " — " + (kindNames[b.k]||"Facility") + " — " + b.t;
+    var col = baseColors[b.c] || "#888";
+    var statusTag = b.s==="ag" ? ' <span style="color:#e8c040">[Agreed]</span>' : b.s==="uc" ? ' <span style="color:#e88040">[Unconfirmed]</span>' : '';
+    var cn = countryNames[b.c]||b.c;
+    var kn = kindNames[b.k]||"Facility";
+    return '<span style="color:'+col+'">\u25CF</span> '+cn+statusTag+' · '+kn+' · <b>'+b.n+'</b> — '+b.t;
   });
-  // Location name from first base
-  var locName = cl.bases[0].n;
-  if(cl.bases.length > 1){
-    // Use common location name (e.g. "Djibouti" for the cluster)
-    var loc = cl.bases[0].t.split(",").pop().trim();
-    locName = loc || cl.bases[0].n;
+  // Header: location name + host country
+  var hdr;
+  if(cl.bases.length === 1){
+    var b0 = cl.bases[0];
+    hdr = '<b>'+b0.n+', '+(b0.hc||'')+'</b>';
+  } else {
+    // For clusters, use host country from first entry; deduplicate if all same
+    var hcs = [];
+    cl.bases.forEach(function(b){ if(b.hc && hcs.indexOf(b.hc)<0) hcs.push(b.hc); });
+    var locLabel = hcs.join(' / ');
+    hdr = '<b>'+locLabel+'</b> ('+cl.bases.length+' presence'+(cl.bases.length>1?'s':'')+')';
   }
   tip.style("display","block")
     .style("left",(ev.clientX+14)+"px")
     .style("top",(ev.clientY-12)+"px")
-    .html("<b>"+locName+"</b> ("+cl.bases.length+" presence"+(cl.bases.length>1?"s":"")+")<br>"+lines.join("<br>"));
+    .html(hdr+"<br>"+lines.join("<br>"));
 }).on("mousemove",function(ev){
   tip.style("left",(ev.clientX+14)+"px").style("top",(ev.clientY-12)+"px");
 }).on("mouseout",function(){
@@ -1422,7 +1512,25 @@ basesGroup.selectAll(".base-dot").on("mouseover",function(ev){
 window.toggleBases = function(){
   basesVisible = !basesVisible;
   basesGroup.attr("display", basesVisible ? "block" : "none");
-  document.getElementById("basesToggle").textContent = basesVisible ? "Hide Foreign Bases" : "Show Foreign Bases";
+  document.getElementById("basesToggle").textContent = basesVisible ? "Hide Military Bases" : "Show Military Bases";
+  // In bases mode: hide non-capital Indian cities and strategic ports for clarity
+  var cityVis = basesVisible ? "none" : null;
+  var fullVis = basesVisible ? "none" : null;
+  svg.selectAll(".city-dot").each(function(){
+    var el = d3.select(this);
+    if(el.attr("data-cap")==="1") return; // keep capital always
+    el.attr("display", basesVisible ? "none" : "block");
+  });
+  svg.selectAll(".city-lbl").each(function(){
+    var el = d3.select(this);
+    if(el.attr("data-cap")==="1") return; // keep capital label always
+    el.attr("display", basesVisible ? "none" : "block");
+  });
+  svg.selectAll(".port-dot").attr("display", basesVisible ? "none" : "block");
+  svg.selectAll(".port-lbl").attr("display", basesVisible ? "none" : "block");
+  // Also hide footer legend items for cities/ports
+  document.getElementById("lg-cities").style.display = basesVisible ? "none" : "flex";
+  document.getElementById("lg-ports").style.display = basesVisible ? "none" : "flex";
 };
 
 /* -----------------------------------------------------------
@@ -1520,14 +1628,10 @@ window.toggleTheme = function(){
     var el = d3.select(this);
     el.attr("fill", bc[el.attr("data-country")] || "#888");
   });
-  basesGroup.selectAll(".base-lbl").each(function(){
-    var el = d3.select(this);
-    el.attr("fill", bc[el.attr("data-country")] || "#888");
-  });
   basesGroup.select(".bases-legend-bg").attr("fill", isDark ? "rgba(8,14,24,0.8)" : "rgba(255,255,255,0.9)");
 };
 
-console.log("Map v7 rendered.");
+console.log("Map v8 rendered — 14 powers, 76 installations.");
 })();
 </script>
 </body>
