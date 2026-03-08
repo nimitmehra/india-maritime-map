@@ -39,7 +39,7 @@ None of that is true.
 
 4. **Every major chokepoint is within operational reach.** Hormuz, Bab-el-Mandeb, Malacca, Lombok, Sunda, Palk Strait — all visible, all within range of Indian naval assets based at Mumbai, Karwar, Visakhapatnam, Kochi, and Port Blair.
 
-5. **The military picture is visible.** Fourteen powers operate 76 installations across the Indo-Pacific. The map shows domestic fleet headquarters, forward-deployed bases, overseas ports, surveillance outposts, and installations under negotiation — with clear status markers distinguishing what is operational from what is aspirational.
+5. **The military picture is visible.** Fourteen powers operate 88 installations across the Indo-Pacific. The map shows domestic fleet headquarters, forward-deployed bases, overseas ports, surveillance outposts, and installations under negotiation — with clear status markers distinguishing what is operational from what is aspirational.
 
 You cannot build a maritime strategy while staring at maps that orient your thinking toward land borders.
 
@@ -50,11 +50,11 @@ You cannot build a maritime strategy while staring at maps that orient your thin
 ### Shipping routes
 Hover over any country to see animated shipping routes showing how trade reaches India. Per-port waypoint routes for ~50 countries follow actual sea lanes — US cargo from New York via Gibraltar and Suez to Mumbai, Chinese exports from Shanghai through the South China Sea and Malacca to Chennai, Australian bulk via Lombok and the Arafura Sea.
 
-### Military bases (76 installations, 14 powers)
+### Military bases (88 installations, 14 powers)
 Toggle **"Show Military Bases"** to reveal the complete military picture. When active, non-essential map elements (Indian city markers, strategic port labels) are hidden for clarity — only chokepoints, country names, and base markers remain. All detail is accessible via hover tooltips.
 
 **Three-tier status system:**
-- **Solid markers** — Operational (57 installations)
+- **Solid markers** — Operational (68 installations)
 - **Dashed-ring markers** — Agreed / Under negotiation (7 installations)
 - **Faint dashed markers** — Unconfirmed / Speculative (2 installations)
 
@@ -84,11 +84,11 @@ The map shows **domestic fleet headquarters and home bases** for countries whose
 | **Israel** | ❌ | Projects into the region through intel and partnerships, not fleet deployments. Haifa (Mediterranean) and Eilat (tiny Red Sea port) would add no insight. Three forward positions (Eritrea intel, Somaliland) are on the map. |
 | **Italy** | ❌ | Anti-piracy base in Djibouti (on map). Home fleet in the Mediterranean is not relevant. |
 
-#### Full breakdown: 14 powers, 76 installations
+#### Full breakdown: 14 powers, 88 installations
 
 | Power | Count | Key positions |
 |-------|-------|---------------|
-| **United States** | 18 | 5th Fleet (Bahrain), 7th Fleet (Yokosuka), Guam (Second Island Chain), Philippines EDCA (First Island Chain), Diego Garcia, Camp Lemonnier (Djibouti), Al Udeid (Qatar), Al Dhafra (UAE), Pine Gap, Waihopai (NZ Five Eyes), HMAS Stirling (AUKUS, agreed) |
+| **United States** | 25 | 5th Fleet (Bahrain), 7th Fleet (Yokosuka), Yokota (USFJ HQ), Misawa, Iwakuni (F-35B), Kadena (Okinawa), Sasebo, Osan & Kunsan (S. Korea), Guam (Second Island Chain), Philippines EDCA (First Island Chain), Diego Garcia, Camp Lemonnier (Djibouti), Al Udeid (Qatar), Al Dhafra (UAE), Prince Sultan AB (Saudi Arabia), Muwaffaq Salti (Jordan), Pine Gap, Waihopai (NZ Five Eyes), HMAS Stirling (AUKUS, agreed) |
 | **China** | 14 | 3 fleet HQs (Zhanjiang, Ningbo, Qingdao), Yulin sub base, Gwadar, Hambantota, Djibouti, Ream, Kyaukphyu, Chittagong, Woody Is. & Spratlys (SCS), Port Sudan, Piraeus |
 | **India** | 10 | 3 Naval Commands (Mumbai, Visakhapatnam, Kochi), A&N Command (Port Blair), INS Kadamba Karwar, INS Rajali Arakkonam, Agalega, N. Madagascar, Assumption Is., Duqm |
 | **UAE** | 6 | Abu Dhabi Naval Base, Berbera, Mayun/Perim Is., Assab, Socotra, Bosaso |
@@ -96,11 +96,11 @@ The map shows **domestic fleet headquarters and home bases** for countries whose
 | **Pakistan** | 4 | Karachi, Ormara/Jinnah, Turbat, Gwadar |
 | **Iran** | 4 | Bandar Abbas, Jask, Abu Musa Is., Chabahar |
 | **Israel** | 3 | Dahlak Is. (unconfirmed), Amba Soira (unconfirmed), Somaliland (agreed) |
-| **United Kingdom** | 2 | HMS Juffair (Bahrain), Duqm (Oman) |
+| **United Kingdom** | 3 | HMS Juffair (Bahrain), Duqm (Oman), BATUK (Kenya) |
 | **Turkey** | 4 | Gölcük (Naval Forces Command HQ), Aksaz (Mediterranean Fleet), Mersin (Eastern Med, closest to Suez), TURKSOM (Somalia) |
-| **Russia** | 2 | Port Sudan (agreed, frozen), Massawa (agreed) |
+| **Russia** | 4 | Severomorsk (Northern Fleet HQ), Vladivostok (Pacific Fleet HQ), Port Sudan (agreed, frozen), Massawa (agreed) |
 | **Saudi Arabia** | 2 | King Faisal Naval Base (Jeddah, Red Sea fleet), Djibouti (agreed) |
-| **Japan** | 1 | JMSDF Djibouti |
+| **Japan** | 3 | JMSDF Yokosuka (Fleet HQ), JMSDF Kure (submarines/carriers), JMSDF Djibouti |
 | **Italy** | 1 | Base Amedeo Guillet (Djibouti) |
 
 Each base marker shows its country's unique color. Hover over any marker for full details: location name, host country, operating country, facility type, operational status, and description.
@@ -127,7 +127,7 @@ Toggle between dark mode (default, ocean-forward) and light mode.
 - **World data**: Natural Earth 50m via `world-atlas@2` TopoJSON (CDN with fallback)
 - **India boundary**: Datameet composite GeoJSON (~21 KB simplified), clockwise winding, overlaid on top of Natural Earth India
 - **Rendering**: 13 SVG layers from ocean gradient to hover interaction
-- **Military bases layer**: 76 entries with per-entry status codes (`op`/`ag`/`uc`) controlling opacity and dashed-ring visual treatment. 0.6° proximity clustering with averaged cluster centres. Rich HTML tooltips with country colors, status tags, host country, and structured format. Bases mode hides non-essential city/port labels for clarity.
+- **Military bases layer**: 88 entries with per-entry status codes (`op`/`ag`/`uc`) controlling opacity and dashed-ring visual treatment. 0.6° proximity clustering with averaged cluster centres. Rich HTML tooltips with country colors, status tags, host country, and structured format. Bases mode hides non-essential city/port labels for clarity.
 - **Theme system**: Dual theme objects (~30 color properties each) with per-element SVG recoloring
 
 ---
@@ -150,7 +150,7 @@ No server needed. Opens in any modern browser. The map loads world data from CDN
 - **v4**: Datameet India overlay (CW winding fix)
 - **v5**: Clean rewrite with 50m data, capitals and ports hover system
 - **v7**: Sea lanes, per-port shipping routes for ~50 countries, foreign bases overlay (7 powers, 36 installations), light/dark toggle
-- **v8** (current): Expanded to **14 powers and 76 installations**. Renamed from "Foreign Bases" to "Military Bases". Added domestic naval bases for India (6), Pakistan (4), Iran (4), China (3 fleet HQs), UAE, Saudi Arabia, Turkey. Added US island chain positions (Guam, Philippines EDCA, HMAS Stirling/AUKUS), France's Gulf and Indian Ocean bases, NZ Five Eyes. Added Israel, Russia, Italy. Three-tier status system (operational / agreed / unconfirmed). Cluster threshold tightened to 0.6°. Structured tooltips with host country, base name, type, and status. Clean bases mode hides non-essential city labels.
+- **v8** (current): Expanded to **14 powers and 88 installations**. Renamed from "Foreign Bases" to "Military Bases". Added domestic naval bases for India (6), Pakistan (4), Iran (4), China (3 fleet HQs), UAE, Saudi Arabia, Turkey. Added US island chain positions (Guam, Philippines EDCA, HMAS Stirling/AUKUS), France's Gulf and Indian Ocean bases, NZ Five Eyes. Added Israel, Russia, Italy. Three-tier status system (operational / agreed / unconfirmed). Cluster threshold tightened to 0.6°. Structured tooltips with host country, base name, type, and status. Clean bases mode hides non-essential city labels.
 
 ---
 
