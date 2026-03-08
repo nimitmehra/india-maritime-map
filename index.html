@@ -1254,9 +1254,14 @@ var baseColorsLight = {
 var foreignBases = [
   // US — hc = host country for tooltip header
   {n:"Yokosuka",c:"US",k:"b",s:"op",hc:"Japan",t:"Naval Base (7th Fleet HQ)",ln:139.67,lt:35.28},
-  {n:"Kadena",c:"US",k:"b",s:"op",hc:"Japan",t:"Air Base, Okinawa",ln:127.77,lt:26.35},
+  {n:"Kadena",c:"US",k:"b",s:"op",hc:"Japan",t:"Air Base, Okinawa — Keystone of the Pacific",ln:127.77,lt:26.35},
   {n:"Sasebo",c:"US",k:"b",s:"op",hc:"Japan",t:"Naval Base",ln:129.72,lt:33.16},
-  {n:"Camp Humphreys",c:"US",k:"b",s:"op",hc:"South Korea",t:"Army Base",ln:127.0,lt:36.96},
+  {n:"Yokota",c:"US",k:"b",s:"op",hc:"Japan",t:"USFJ HQ + 5th Air Force HQ — command centre for all US forces in Japan",ln:139.35,lt:35.75,h:1},
+  {n:"Misawa",c:"US",k:"b",s:"op",hc:"Japan",t:"Air Base, northern Honshu — F-16s, intel wing, faces Russia/China",ln:141.38,lt:40.70},
+  {n:"Iwakuni",c:"US",k:"b",s:"op",hc:"Japan",t:"MCAS — F-35B stealth fighters, closest US air base to Korea/China",ln:132.24,lt:34.15},
+  {n:"Camp Humphreys",c:"US",k:"b",s:"op",hc:"South Korea",t:"Army Base, largest US overseas base",ln:127.0,lt:36.96},
+  {n:"Osan",c:"US",k:"b",s:"op",hc:"South Korea",t:"Air Base — F-16s, 48 miles from DMZ, most forward US air base",ln:127.03,lt:37.09,h:1},
+  {n:"Kunsan",c:"US",k:"b",s:"op",hc:"South Korea",t:"Air Base — F-16s, Wolf Pack, western coast",ln:126.62,lt:35.90},
   {n:"Changi",c:"US",k:"b",s:"op",hc:"Singapore",t:"Logistics hub",ln:103.98,lt:1.32},
   {n:"Pine Gap",c:"US",k:"i",s:"op",hc:"Australia",t:"Intel facility",ln:133.74,lt:-23.80},
   {n:"Waihopai",c:"US",k:"i",s:"op",hc:"New Zealand",t:"Five Eyes SIGINT station, NSA-funded, covers South Pacific",ln:173.77,lt:-41.60},
@@ -1272,6 +1277,8 @@ var foreignBases = [
   {n:"Camp Lemonnier",c:"US",k:"b",s:"op",hc:"Djibouti",t:"Naval Base",ln:43.10,lt:11.50,h:1},
   {n:"Thumrait",c:"US",k:"b",s:"op",hc:"Oman",t:"Air access",ln:54.02,lt:17.67,h:1},
   {n:"Masirah",c:"US",k:"b",s:"op",hc:"Oman",t:"Air access, Masirah Island",ln:58.89,lt:20.68},
+  {n:"Prince Sultan AB",c:"US",k:"b",s:"op",hc:"Saudi Arabia",t:"Air Base — 2,300 troops, Patriot + THAAD missile defence",ln:47.58,lt:24.06},
+  {n:"Muwaffaq Salti AB",c:"US",k:"b",s:"op",hc:"Jordan",t:"Air Base — 332nd Air Expeditionary Wing, Levant staging",ln:36.78,lt:31.83},
   // China
   {n:"PLA Djibouti",c:"CN",k:"b",s:"op",hc:"Djibouti",t:"Naval Base (1st overseas)",ln:42.90,lt:11.62,h:1},
   {n:"Gwadar",c:"CN",k:"p",s:"op",hc:"Pakistan",t:"Dual-use port, CPEC",ln:62.33,lt:25.12},
@@ -1295,6 +1302,7 @@ var foreignBases = [
   // UK
   {n:"HMS Juffair",c:"UK",k:"b",s:"op",hc:"Bahrain",t:"Naval base",ln:50.45,lt:26.30,h:1},
   {n:"Duqm (UK)",c:"UK",k:"b",s:"op",hc:"Oman",t:"Joint logistics hub",ln:57.70,lt:19.67},
+  {n:"BATUK",c:"UK",k:"b",s:"op",hc:"Kenya",t:"British Army Training Unit, ~1,000 rotating troops",ln:37.07,lt:-0.01},
   // India — overseas
   {n:"Agalega",c:"IN",k:"i",s:"op",hc:"Mauritius",t:"Airstrip + surveillance",ln:56.62,lt:-10.40},
   {n:"N. Madagascar",c:"IN",k:"i",s:"op",hc:"Madagascar",t:"Listening post",ln:49.29,lt:-12.28},
@@ -1308,7 +1316,9 @@ var foreignBases = [
   {n:"INS Kadamba, Karwar",c:"IN",k:"b",s:"op",hc:"India",t:"India's largest naval base, Project Seabird, submarine pens",ln:74.13,lt:14.80},
   {n:"INS Rajali, Arakkonam",c:"IN",k:"b",s:"op",hc:"India",t:"Naval air station, P-8I Poseidon maritime patrol base",ln:79.66,lt:13.07},
   // Japan
-  {n:"JMSDF Djibouti",c:"JP",k:"b",s:"op",hc:"Djibouti",t:"Naval facility",ln:43.10,lt:11.72,h:1},
+  {n:"JMSDF Djibouti",c:"JP",k:"b",s:"op",hc:"Djibouti",t:"Naval facility, anti-piracy",ln:43.10,lt:11.72,h:1},
+  {n:"JMSDF Yokosuka",c:"JP",k:"b",s:"op",hc:"Japan",t:"Self-Defense Fleet HQ, submarine flotilla, Izumo-class carriers",ln:139.65,lt:35.30,h:1},
+  {n:"JMSDF Kure",c:"JP",k:"b",s:"op",hc:"Japan",t:"Submarine flotilla, landing ships, major repair yard",ln:132.55,lt:34.23},
   // Turkey
   {n:"TURKSOM",c:"TR",k:"b",s:"op",hc:"Somalia",t:"Military base, largest Turkish overseas",ln:45.34,lt:2.05},
   {n:"Gölcük Naval Base",c:"TR",k:"b",s:"op",hc:"Turkey",t:"Naval Forces Command HQ — fleet headquarters",ln:29.82,lt:40.72},
@@ -1338,6 +1348,8 @@ var foreignBases = [
   // Russia
   {n:"Port Sudan (RU)",c:"RU",k:"p",s:"ag",hc:"Sudan",t:"Naval logistics, 25-yr deal, frozen Dec 2025",ln:37.22,lt:19.65,h:1},
   {n:"Massawa",c:"RU",k:"p",s:"ag",hc:"Eritrea",t:"Logistics centre, MoU signed, port call 2024",ln:39.47,lt:15.61},
+  {n:"Vladivostok",c:"RU",k:"b",s:"op",hc:"Russia",t:"Pacific Fleet HQ — Indian Ocean via Tsushima, SCS, Malacca",ln:131.90,lt:43.12},
+  {n:"Severomorsk",c:"RU",k:"b",s:"op",hc:"Russia",t:"Northern Fleet HQ — Indian Ocean via Atlantic + Cape or Suez",ln:33.42,lt:69.07},
   // Italy
   {n:"Djibouti (IT)",c:"IT",k:"b",s:"op",hc:"Djibouti",t:"Base Amedeo Guillet, 300 personnel, since 2013",ln:43.20,lt:11.55,h:1},
   // Saudi Arabia
@@ -1724,7 +1736,7 @@ window.toggleTheme = function(){
   updateBaseFilter();
 };
 
-console.log("Map v8 rendered — 14 powers, 76 installations.");
+console.log("Map v8 rendered — 14 powers, 88 installations.");
 })();
 </script>
 </body>
